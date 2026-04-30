@@ -1,30 +1,28 @@
 --[[
-    Von Hub Library v2.0
-    Complete recreation matching Ice Hub v5 HTML aesthetic
-    Every component matches the exact CSS styling from the HTML file
+    Ice Hub Library
+    A Roblox UI library with accurate Ice Hub aesthetic recreation.
+    Inspired by Rayfield Interface Suite structure.
+    
+    Usage:
+        local IceLibrary = loadstring(game:HttpGet("YOUR_URL"))()
+        local Window = IceLibrary:CreateWindow({ ... })
+        local Tab = Window:CreateTab("Tab Name")
+        Tab:CreateToggle({ ... })
 ]]
 
-local VonHub = {}
-VonHub.Flags = {}
+local IceHub = {}
+IceHub.Flags = {}
 
 -- ──────────────────────────────────────────────────
 -- Services
 -- ──────────────────────────────────────────────────
-local function getService(n)
-    local s = game:GetService(n)
-    if cloneref then
-        local success, result = pcall(function() return cloneref(s) end)
-        if success then return result end
-    end
-    return s
-end
-
-local TweenService = getService("TweenService")
+local function getService(n) local s = game:GetService(n) return if cloneref then cloneref(s) else s end end
+local TweenService    = getService("TweenService")
 local UserInputService = getService("UserInputService")
-local RunService = getService("RunService")
-local Players = getService("Players")
-local CoreGui = getService("CoreGui")
-local HttpService = getService("HttpService")
+local RunService      = getService("RunService")
+local Players         = getService("Players")
+local CoreGui         = getService("CoreGui")
+local HttpService     = getService("HttpService")
 
 -- ──────────────────────────────────────────────────
 -- Tween Helper
@@ -34,140 +32,35 @@ local function tween(obj, t, props)
 end
 
 -- ──────────────────────────────────────────────────
--- Color Palette (from Ice Hub HTML)
+-- GUI Assets  (Ice Hub Palette)
 -- ──────────────────────────────────────────────────
 local C = {
-    -- Background gradient layers
-    BG_TOP = Color3.fromRGB(20, 24, 40),
-    BG_MID = Color3.fromRGB(14, 19, 32),
-    BG_BOT = Color3.fromRGB(10, 15, 26),
-    
-    -- Window elements
-    WindowBorder = Color3.fromRGB(70, 90, 170),
-    TitlebarBg = Color3.fromRGB(255, 255, 255), -- rgba(255,255,255,0.02) → nearly transparent
-    TitleText = Color3.fromRGB(208, 216, 240),
-    TitleVersion = Color3.fromRGB(74, 84, 128),
-    
-    -- Separator gradient colors
-    SepEdge = Color3.fromRGB(0, 0, 0),
-    SepGlow1 = Color3.fromRGB(70, 100, 210),
-    SepGlow2 = Color3.fromRGB(100, 130, 255),
-    
-    -- Sidebar
-    SidebarBg = Color3.fromRGB(0, 0, 0),
-    NavText = Color3.fromRGB(83, 92, 128),
-    NavHover = Color3.fromRGB(136, 144, 184),
-    NavActiveBg1 = Color3.fromRGB(40, 60, 150),
-    NavActiveBg2 = Color3.fromRGB(30, 45, 110),
-    NavActiveText = Color3.fromRGB(255, 255, 255),
-    NavActiveBorder = Color3.fromRGB(110, 140, 255),
-    
-    -- Row elements
-    RowBorder = Color3.fromRGB(50, 70, 130),
-    RowLabel = Color3.fromRGB(200, 208, 232),
-    
-    -- Circle buttons (X and Star)
-    CircleBg1 = Color3.fromRGB(26, 32, 64),
-    CircleBg2 = Color3.fromRGB(20, 24, 48),
-    CircleBorder = Color3.fromRGB(60, 80, 160),
-    CircleText = Color3.fromRGB(53, 64, 112),
-    
-    -- Reset (X) button colors
-    ResetHoverBg1 = Color3.fromRGB(42, 21, 32),
-    ResetHoverBg2 = Color3.fromRGB(32, 16, 21),
-    ResetHoverBorder = Color3.fromRGB(180, 50, 50),
-    ResetHasStateText = Color3.fromRGB(106, 48, 48),
-    ResetHasStateBorder = Color3.fromRGB(120, 40, 40),
-    
-    -- Star button colors
-    StarBorder = Color3.fromRGB(50, 80, 170),
-    StarText = Color3.fromRGB(58, 80, 144),
-    StarHoverBorder = Color3.fromRGB(80, 120, 220),
-    StarHoverText = Color3.fromRGB(90, 112, 192),
-    StarActiveText = Color3.fromRGB(240, 192, 64),
-    StarActiveBorder = Color3.fromRGB(200, 160, 30),
-    StarActiveBg1 = Color3.fromRGB(30, 26, 16),
-    StarActiveBg2 = Color3.fromRGB(24, 20, 8),
-    
-    -- Bind pill
-    BindBg1 = Color3.fromRGB(26, 32, 64),
-    BindBg2 = Color3.fromRGB(20, 24, 48),
-    BindBorder = Color3.fromRGB(60, 80, 160),
-    BindText = Color3.fromRGB(74, 84, 128),
-    BindHoverText = Color3.fromRGB(136, 144, 192),
-    BindHoverBorder = Color3.fromRGB(90, 110, 200),
-    BindListeningBorder = Color3.fromRGB(120, 160, 255),
-    BindListeningText = Color3.fromRGB(160, 191, 255),
-    BindBoundText = Color3.fromRGB(136, 152, 208),
-    BindBoundBorder = Color3.fromRGB(90, 120, 200),
-    
-    -- Toggle
-    ToggleTrackBg1 = Color3.fromRGB(17, 22, 36),
-    ToggleTrackBg2 = Color3.fromRGB(14, 18, 32),
-    ToggleTrackBorder = Color3.fromRGB(55, 75, 160),
-    ToggleTrackActiveBg1 = Color3.fromRGB(30, 42, 94),
-    ToggleTrackActiveBg2 = Color3.fromRGB(24, 34, 80),
-    ToggleTrackActiveBorder = Color3.fromRGB(85, 115, 220),
-    ToggleKnobBg1 = Color3.fromRGB(58, 68, 112),
-    ToggleKnobBg2 = Color3.fromRGB(44, 52, 96),
-    ToggleKnobBorder = Color3.fromRGB(80, 100, 200),
-    ToggleKnobActiveBg1 = Color3.fromRGB(106, 126, 204),
-    ToggleKnobActiveBg2 = Color3.fromRGB(80, 96, 176),
-    ToggleKnobActiveBorder = Color3.fromRGB(130, 155, 245),
-    
-    -- Diamond button
-    DiamondBg1 = Color3.fromRGB(58, 68, 112),
-    DiamondBg2 = Color3.fromRGB(44, 52, 96),
-    DiamondBorder = Color3.fromRGB(80, 100, 200),
-    DiamondHoverBg1 = Color3.fromRGB(74, 84, 128),
-    DiamondHoverBg2 = Color3.fromRGB(58, 68, 112),
-    DiamondFlashBg1 = Color3.fromRGB(106, 126, 204),
-    DiamondFlashBg2 = Color3.fromRGB(80, 96, 176),
-    DiamondFlashBorder = Color3.fromRGB(130, 155, 245),
-    
-    -- Mini GUI
-    MiniBgTop = Color3.fromRGB(20, 24, 40),
-    MiniBgMid = Color3.fromRGB(14, 19, 32),
-    MiniBgBot = Color3.fromRGB(10, 15, 26),
-    MiniBorder = Color3.fromRGB(70, 90, 170),
-    MiniTitleBg = Color3.fromRGB(255, 255, 255),
-    MiniTitleText = Color3.fromRGB(136, 144, 184),
-    MiniTitleSep = Color3.fromRGB(70, 100, 210),
-    MiniRowBorder = Color3.fromRGB(50, 70, 130),
-    MiniLabel = Color3.fromRGB(120, 128, 168),
-    MiniBind = Color3.fromRGB(74, 84, 128),
-    MiniEmpty = Color3.fromRGB(58, 64, 96),
-    
-    -- Mini Toggle
-    MiniToggleTrackBg1 = Color3.fromRGB(17, 22, 36),
-    MiniToggleTrackBg2 = Color3.fromRGB(14, 18, 32),
-    MiniToggleTrackBorder = Color3.fromRGB(55, 75, 160),
-    MiniToggleTrackActiveBg1 = Color3.fromRGB(30, 42, 94),
-    MiniToggleTrackActiveBg2 = Color3.fromRGB(24, 34, 80),
-    MiniToggleTrackActiveBorder = Color3.fromRGB(85, 115, 220),
-    MiniToggleKnobBg1 = Color3.fromRGB(58, 68, 112),
-    MiniToggleKnobBg2 = Color3.fromRGB(44, 52, 96),
-    MiniToggleKnobBorder = Color3.fromRGB(80, 100, 200),
-    MiniToggleKnobActiveBg1 = Color3.fromRGB(106, 126, 204),
-    MiniToggleKnobActiveBg2 = Color3.fromRGB(80, 96, 176),
-    MiniToggleKnobActiveBorder = Color3.fromRGB(130, 155, 245),
-    
-    -- Mini diamond
-    MiniDiamondBg1 = Color3.fromRGB(58, 68, 112),
-    MiniDiamondBg2 = Color3.fromRGB(44, 52, 96),
-    MiniDiamondBorder = Color3.fromRGB(80, 100, 200),
-    MiniDiamondFlashBg1 = Color3.fromRGB(106, 126, 204),
-    MiniDiamondFlashBg2 = Color3.fromRGB(80, 96, 176),
-    
-    -- Toast/Notification
-    ToastBg = Color3.fromRGB(20, 30, 70),
-    ToastBorder = Color3.fromRGB(80, 110, 220),
-    ToastText = Color3.fromRGB(160, 176, 224),
-    
-    -- Close button
-    CloseBg = Color3.fromRGB(192, 57, 43),
-    CloseHoverBg = Color3.fromRGB(231, 76, 60),
-    CloseText = Color3.fromRGB(255, 255, 255),
+    BG          = Color3.fromRGB(14, 19, 32),
+    BG2         = Color3.fromRGB(18, 24, 40),
+    Topbar      = Color3.fromRGB(20, 26, 44),
+    Sidebar     = Color3.fromRGB(12, 17, 28),
+    Accent      = Color3.fromRGB(80, 110, 220),
+    AccentGlow  = Color3.fromRGB(100, 135, 255),
+    ElementBG   = Color3.fromRGB(22, 30, 52),
+    ElementHov  = Color3.fromRGB(28, 38, 64),
+    Text        = Color3.fromRGB(200, 210, 235),
+    TextDim     = Color3.fromRGB(83, 92, 128),
+    TextMuted   = Color3.fromRGB(48, 58, 90),
+    Stroke      = Color3.fromRGB(55, 75, 160),
+    StrokeDim   = Color3.fromRGB(35, 50, 100),
+    ToggleOn    = Color3.fromRGB(90, 120, 210),
+    ToggleOff   = Color3.fromRGB(30, 40, 75),
+    Knob        = Color3.fromRGB(58, 68, 108),
+    KnobOn      = Color3.fromRGB(106, 126, 204),
+    Red         = Color3.fromRGB(192, 57, 43),
+    SepLine     = Color3.fromRGB(70, 100, 210),
+    SliderFill  = Color3.fromRGB(60, 90, 200),
+    SliderBG    = Color3.fromRGB(17, 24, 44),
+    DropBG      = Color3.fromRGB(16, 22, 38),
+    DropSel     = Color3.fromRGB(30, 42, 80),
+    InputBG     = Color3.fromRGB(16, 22, 38),
+    Section     = Color3.fromRGB(60, 75, 140),
+    White       = Color3.fromRGB(255, 255, 255),
 }
 
 -- ──────────────────────────────────────────────────
@@ -181,54 +74,18 @@ local function new(class, props, parent)
 end
 
 -- ──────────────────────────────────────────────────
--- Gradient Helpers
+-- Gradient Helper (for separator lines)
 -- ──────────────────────────────────────────────────
-local function addHorizontalGradient(frame)
+local function addGradient(frame, horizontal)
     local g = new("UIGradient", {
         Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, C.SepEdge),
-            ColorSequenceKeypoint.new(0.1, Color3.fromRGB(0, 0, 0)),
-            ColorSequenceKeypoint.new(0.2, C.SepGlow1),
-            ColorSequenceKeypoint.new(0.5, C.SepGlow2),
-            ColorSequenceKeypoint.new(0.8, C.SepGlow1),
-            ColorSequenceKeypoint.new(0.9, Color3.fromRGB(0, 0, 0)),
-            ColorSequenceKeypoint.new(1, C.SepEdge),
+            ColorSequenceKeypoint.new(0,   Color3.fromRGB(0,0,0)),
+            ColorSequenceKeypoint.new(0.2, C.Stroke),
+            ColorSequenceKeypoint.new(0.5, C.AccentGlow),
+            ColorSequenceKeypoint.new(0.8, C.Stroke),
+            ColorSequenceKeypoint.new(1,   Color3.fromRGB(0,0,0)),
         }),
-        Rotation = 0,
-        Transparency = NumberSequence.new({
-            NumberSequenceKeypoint.new(0, 1),
-            NumberSequenceKeypoint.new(0.1, 0.5),
-            NumberSequenceKeypoint.new(0.2, 0.5),
-            NumberSequenceKeypoint.new(0.5, 0.15),
-            NumberSequenceKeypoint.new(0.8, 0.5),
-            NumberSequenceKeypoint.new(0.9, 0.5),
-            NumberSequenceKeypoint.new(1, 1),
-        }),
-    }, frame)
-    return g
-end
-
-local function addVerticalGradient(frame)
-    local g = new("UIGradient", {
-        Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, C.SepEdge),
-            ColorSequenceKeypoint.new(0.1, Color3.fromRGB(0, 0, 0)),
-            ColorSequenceKeypoint.new(0.2, C.SepGlow1),
-            ColorSequenceKeypoint.new(0.5, C.SepGlow2),
-            ColorSequenceKeypoint.new(0.8, C.SepGlow1),
-            ColorSequenceKeypoint.new(0.9, Color3.fromRGB(0, 0, 0)),
-            ColorSequenceKeypoint.new(1, C.SepEdge),
-        }),
-        Rotation = 90,
-        Transparency = NumberSequence.new({
-            NumberSequenceKeypoint.new(0, 1),
-            NumberSequenceKeypoint.new(0.1, 0.5),
-            NumberSequenceKeypoint.new(0.2, 0.5),
-            NumberSequenceKeypoint.new(0.5, 0.15),
-            NumberSequenceKeypoint.new(0.8, 0.5),
-            NumberSequenceKeypoint.new(0.9, 0.5),
-            NumberSequenceKeypoint.new(1, 1),
-        }),
+        Rotation = horizontal and 0 or 90,
     }, frame)
     return g
 end
@@ -241,20 +98,18 @@ local NotifHolder = nil
 local function ensureNotifHolder()
     if NotifHolder and NotifHolder.Parent then return end
     NotifHolder = new("ScreenGui", {
-        Name = "VonHubNotifications",
+        Name = "IceHubNotifications",
         ResetOnSpawn = false,
         ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
         DisplayOrder = 200,
     })
-    local parent
     if gethui then
-        parent = gethui()
+        NotifHolder.Parent = gethui()
     elseif not RunService:IsStudio() then
-        parent = CoreGui
+        NotifHolder.Parent = CoreGui
     else
-        parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+        NotifHolder.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
     end
-    NotifHolder.Parent = parent
 
     new("UIListLayout", {
         SortOrder = Enum.SortOrder.LayoutOrder,
@@ -264,51 +119,71 @@ local function ensureNotifHolder()
     }, NotifHolder)
 
     new("UIPadding", {
-        PaddingBottom = UDim.new(0, 12),
-        PaddingRight = UDim.new(0, 16),
+        PaddingBottom = UDim.new(0, 16),
+        PaddingRight  = UDim.new(0, 16),
     }, NotifHolder)
 end
 
-function VonHub:Notify(data)
+function IceHub:Notify(data)
     ensureNotifHolder()
     task.spawn(function()
         local notif = new("Frame", {
-            Name = "VonNotif",
-            Size = UDim2.new(0, 0, 0, 0),
-            BackgroundColor3 = C.ToastBg,
-            BackgroundTransparency = 0.04,
+            Name            = "IceNotif",
+            Size            = UDim2.new(0, 280, 0, 0),
+            BackgroundColor3 = C.BG2,
+            BackgroundTransparency = 0,
             BorderSizePixel = 0,
             ClipsDescendants = true,
             ZIndex = 50,
         }, NotifHolder)
-        new("UICorner", { CornerRadius = UDim.new(0, 6) }, notif)
-        new("UIStroke", { Color = C.ToastBorder, Thickness = 1, Transparency = 0.55 }, notif)
+
+        new("UICorner", { CornerRadius = UDim.new(0, 7) }, notif)
+        new("UIStroke", { Color = C.Stroke, Thickness = 1, Transparency = 0.4 }, notif)
+
+        -- Blue dot
+        local dot = new("Frame", {
+            Size = UDim2.new(0, 8, 0, 8),
+            Position = UDim2.new(0, 12, 0, 14),
+            BackgroundColor3 = C.AccentGlow,
+            BorderSizePixel = 0,
+            ZIndex = 51,
+        }, notif)
+        new("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+
+        local title = new("TextLabel", {
+            Size = UDim2.new(1, -36, 0, 18),
+            Position = UDim2.new(0, 28, 0, 8),
+            BackgroundTransparency = 1,
+            Text = data.Title or "Ice Hub",
+            TextColor3 = C.Text,
+            TextSize = 13,
+            Font = Enum.Font.GothamBold,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            ZIndex = 51,
+        }, notif)
 
         local content = new("TextLabel", {
-            Size = UDim2.new(0, 0, 0, 0),
+            Size = UDim2.new(1, -20, 0, 0),
+            Position = UDim2.new(0, 12, 0, 30),
             BackgroundTransparency = 1,
             Text = data.Content or "",
-            TextColor3 = C.ToastText,
+            TextColor3 = C.TextDim,
             TextSize = 12,
             Font = Enum.Font.Gotham,
             TextWrapped = true,
             TextXAlignment = Enum.TextXAlignment.Left,
             ZIndex = 51,
         }, notif)
-        
-        new("UIPadding", {
-            PaddingTop = UDim.new(0, 6),
-            PaddingBottom = UDim.new(0, 6),
-            PaddingLeft = UDim.new(0, 13),
-            PaddingRight = UDim.new(0, 13),
-        }, notif)
 
         task.wait()
-        local bounds = content.TextBounds
-        tween(notif, 0.25, { Size = UDim2.new(0, bounds.X + 26, 0, bounds.Y + 12) })
-        task.wait(data.Duration or 2.2)
-        tween(notif, 0.25, { BackgroundTransparency = 1 })
-        task.wait(0.25)
+        local bounds = content.TextBounds.Y
+        local totalH = math.max(bounds + 42, 50)
+        content.Size = UDim2.new(1, -20, 0, bounds + 4)
+
+        tween(notif, 0.4, { Size = UDim2.new(0, 280, 0, totalH) })
+        task.wait(data.Duration or 4)
+        tween(notif, 0.3, { BackgroundTransparency = 1, Size = UDim2.new(0, 240, 0, 0) })
+        task.wait(0.35)
         notif:Destroy()
     end)
 end
@@ -316,54 +191,43 @@ end
 -- ──────────────────────────────────────────────────
 -- CreateWindow
 -- ──────────────────────────────────────────────────
-function VonHub:CreateWindow(Settings)
+function IceHub:CreateWindow(Settings)
     Settings = Settings or {}
-    local WindowName = Settings.Name or "Von Hub"
+    local WindowName    = Settings.Name or "Ice Hub"
     local WindowVersion = Settings.Version or "v1.0"
+    local Theme         = Settings.Theme  -- future use
     local configEnabled = Settings.ConfigurationSaving and Settings.ConfigurationSaving.Enabled or false
-    local configFolder = Settings.ConfigurationSaving and Settings.ConfigurationSaving.FolderName or "VonHub"
-    local configFile = Settings.ConfigurationSaving and Settings.ConfigurationSaving.FileName or "config"
+    local configFolder  = Settings.ConfigurationSaving and Settings.ConfigurationSaving.FolderName or "IceHub"
+    local configFile    = Settings.ConfigurationSaving and Settings.ConfigurationSaving.FileName or "config"
 
     -- ── Root ScreenGui ───────────────────────────
     local ScreenGui = new("ScreenGui", {
-        Name = "VonHubUI",
+        Name = "IceHubUI",
         ResetOnSpawn = false,
         ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
         DisplayOrder = 100,
     })
-    local parent
     if gethui then
-        parent = gethui()
-    elseif not RunService:IsStudio() then
-        parent = CoreGui
+        ScreenGui.Parent = gethui()
+    elseif not RunService:IsStudio() and CoreGui then
+        ScreenGui.Parent = CoreGui
     else
-        parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+        ScreenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
     end
-    ScreenGui.Parent = parent
 
     -- ── Main Window Frame ────────────────────────
     local MainFrame = new("Frame", {
-        Name = "MainFrame",
-        Size = UDim2.new(0, 620, 0, 400),
-        Position = UDim2.new(0.5, -310, 0.5, -200),
-        BackgroundColor3 = C.BG_MID,
-        BorderSizePixel = 0,
+        Name             = "MainFrame",
+        Size             = UDim2.new(0, 620, 0, 400),
+        Position         = UDim2.new(0.5, -310, 0.5, -200),
+        BackgroundColor3 = C.BG,
+        BorderSizePixel  = 0,
         ClipsDescendants = true,
     }, ScreenGui)
     new("UICorner", { CornerRadius = UDim.new(0, 10) }, MainFrame)
-    new("UIStroke", { Color = C.WindowBorder, Thickness = 1, Transparency = 0.7 }, MainFrame)
+    new("UIStroke", { Color = C.Stroke, Thickness = 1, Transparency = 0.6 }, MainFrame)
 
-    -- Add background gradient
-    local bgGradient = new("UIGradient", {
-        Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, C.BG_TOP),
-            ColorSequenceKeypoint.new(0.6, C.BG_MID),
-            ColorSequenceKeypoint.new(1, C.BG_BOT),
-        }),
-        Rotation = -20,
-    }, MainFrame)
-
-    -- Outer glow shadow
+    -- outer glow shadow frame
     local Shadow = new("ImageLabel", {
         Name = "Shadow",
         AnchorPoint = Vector2.new(0.5, 0.5),
@@ -371,8 +235,8 @@ function VonHub:CreateWindow(Settings)
         Position = UDim2.new(0.5, 0, 0.5, 0),
         BackgroundTransparency = 1,
         Image = "rbxassetid://6015897843",
-        ImageColor3 = Color3.fromRGB(20, 40, 120),
-        ImageTransparency = 0.7,
+        ImageColor3 = C.Accent,
+        ImageTransparency = 0.6,
         ZIndex = 0,
         ScaleType = Enum.ScaleType.Slice,
         SliceCenter = Rect.new(49, 49, 450, 450),
@@ -380,40 +244,31 @@ function VonHub:CreateWindow(Settings)
 
     -- ── Titlebar ─────────────────────────────────
     local Titlebar = new("Frame", {
-        Name = "Titlebar",
-        Size = UDim2.new(1, 0, 0, 38),
-        BackgroundColor3 = C.TitlebarBg,
-        BackgroundTransparency = 0.98,
-        BorderSizePixel = 0,
-        ZIndex = 3,
+        Name             = "Titlebar",
+        Size             = UDim2.new(1, 0, 0, 38),
+        BackgroundColor3 = C.Topbar,
+        BackgroundTransparency = 0.6,
+        BorderSizePixel  = 0,
+        ZIndex           = 3,
     }, MainFrame)
 
-    -- Blue dot
+    -- Dot (glowing blue)
     local TitleDot = new("Frame", {
         Size = UDim2.new(0, 9, 0, 9),
-        Position = UDim2.new(0, 16, 0.5, -4.5),
-        BackgroundColor3 = Color3.fromRGB(170, 238, 255),
+        Position = UDim2.new(0, 14, 0.5, -4.5),
+        BackgroundColor3 = C.AccentGlow,
         BorderSizePixel = 0,
         ZIndex = 4,
     }, Titlebar)
     new("UICorner", { CornerRadius = UDim.new(1, 0) }, TitleDot)
-    
-    -- Dot glow gradient
-    new("UIGradient", {
-        Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(170, 238, 255)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(68, 153, 255)),
-        }),
-        Rotation = 90,
-    }, TitleDot)
 
     local TitleLabel = new("TextLabel", {
         Size = UDim2.new(0.7, 0, 1, 0),
-        Position = UDim2.new(0, 34, 0, 0),
+        Position = UDim2.new(0, 30, 0, 0),
         BackgroundTransparency = 1,
         Text = WindowName,
-        TextColor3 = C.TitleText,
-        TextSize = 13.5,
+        TextColor3 = C.Text,
+        TextSize = 13,
         Font = Enum.Font.GothamMedium,
         TextXAlignment = Enum.TextXAlignment.Left,
         ZIndex = 4,
@@ -424,43 +279,57 @@ function VonHub:CreateWindow(Settings)
         Position = UDim2.new(0, 30 + TitleLabel.TextBounds.X + 4, 0, 0),
         BackgroundTransparency = 1,
         Text = WindowVersion,
-        TextColor3 = C.TitleVersion,
-        TextSize = 12,
+        TextColor3 = C.TextMuted,
+        TextSize = 11,
         Font = Enum.Font.Gotham,
         TextXAlignment = Enum.TextXAlignment.Left,
         ZIndex = 4,
     }, Titlebar)
-
+    -- Update version label position after title renders
     task.defer(function()
-        VerLabel.Position = UDim2.new(0, 34 + TitleLabel.TextBounds.X + 6, 0, 0)
+        VerLabel.Position = UDim2.new(0, 30 + TitleLabel.TextBounds.X + 6, 0, 0)
     end)
 
-    -- Close button
+    -- Close / Minimize buttons
     local CloseBtn = new("TextButton", {
-        Size = UDim2.new(0, 24, 0, 24),
-        Position = UDim2.new(1, -14, 0.5, -12),
+        Size = UDim2.new(0, 22, 0, 22),
+        Position = UDim2.new(1, -12, 0.5, -11),
         AnchorPoint = Vector2.new(1, 0),
-        BackgroundColor3 = C.CloseBg,
+        BackgroundColor3 = Color3.fromRGB(192, 57, 43),
         BorderSizePixel = 0,
         Text = "✕",
-        TextColor3 = C.CloseText,
-        TextSize = 13,
+        TextColor3 = C.White,
+        TextSize = 11,
         Font = Enum.Font.GothamBold,
         ZIndex = 5,
     }, Titlebar)
     new("UICorner", { CornerRadius = UDim.new(0, 5) }, CloseBtn)
-    new("UIStroke", { Color = Color3.fromRGB(0, 0, 0), Thickness = 2, Transparency = 0.5 }, CloseBtn)
+
+    local MinBtn = new("TextButton", {
+        Size = UDim2.new(0, 22, 0, 22),
+        Position = UDim2.new(1, -38, 0.5, -11),
+        AnchorPoint = Vector2.new(1, 0),
+        BackgroundColor3 = C.ElementBG,
+        BorderSizePixel = 0,
+        Text = "−",
+        TextColor3 = C.TextDim,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        ZIndex = 5,
+    }, Titlebar)
+    new("UICorner", { CornerRadius = UDim.new(0, 5) }, MinBtn)
+    new("UIStroke", { Color = C.StrokeDim, Thickness = 1, Transparency = 0.5 }, MinBtn)
 
     -- Separator line under titlebar
     local TitleSep = new("Frame", {
         Name = "TitleSep",
         Size = UDim2.new(1, 0, 0, 1),
         Position = UDim2.new(0, 0, 0, 38),
-        BackgroundColor3 = C.SepGlow2,
+        BackgroundColor3 = C.SepLine,
         BorderSizePixel = 0,
         ZIndex = 3,
     }, MainFrame)
-    addHorizontalGradient(TitleSep)
+    addGradient(TitleSep, true)
 
     -- ── Body ─────────────────────────────────────
     local Body = new("Frame", {
@@ -475,43 +344,30 @@ function VonHub:CreateWindow(Settings)
     local Sidebar = new("Frame", {
         Name = "Sidebar",
         Size = UDim2.new(0, 158, 1, 0),
-        BackgroundColor3 = C.SidebarBg,
-        BackgroundTransparency = 0.85,
+        BackgroundColor3 = C.Sidebar,
+        BackgroundTransparency = 0.25,
         BorderSizePixel = 0,
         ZIndex = 3,
     }, Body)
 
-    -- Sidebar gradient for depth
-    new("UIGradient", {
-        Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0)),
-        }),
-        Transparency = NumberSequence.new({
-            NumberSequenceKeypoint.new(0, 0.85),
-            NumberSequenceKeypoint.new(1, 0.75),
-        }),
-        Rotation = 90,
-    }, Sidebar)
-
-    -- Vertical separator line
+    -- Vertical separator line right of sidebar
     local SidebarSep = new("Frame", {
         Name = "SidebarSep",
         Size = UDim2.new(0, 1, 1, 0),
         Position = UDim2.new(1, 0, 0, 0),
         AnchorPoint = Vector2.new(1, 0),
-        BackgroundColor3 = C.SepGlow2,
+        BackgroundColor3 = C.SepLine,
         BorderSizePixel = 0,
         ZIndex = 4,
     }, Sidebar)
-    addVerticalGradient(SidebarSep)
+    addGradient(SidebarSep, false)
 
     local TabListLayout = new("UIListLayout", {
         SortOrder = Enum.SortOrder.LayoutOrder,
         Padding = UDim.new(0, 0),
     }, Sidebar)
 
-    new("UIPadding", { PaddingTop = UDim.new(0, 10) }, Sidebar)
+    new("UIPadding", { PaddingTop = UDim.new(0, 8) }, Sidebar)
 
     -- ── Panel (content area) ──────────────────────
     local Panel = new("ScrollingFrame", {
@@ -521,7 +377,7 @@ function VonHub:CreateWindow(Settings)
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
         ScrollBarThickness = 3,
-        ScrollBarImageColor3 = C.SepGlow1,
+        ScrollBarImageColor3 = C.Stroke,
         ScrollBarImageTransparency = 0.5,
         CanvasSize = UDim2.new(0, 0, 0, 0),
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
@@ -539,7 +395,7 @@ function VonHub:CreateWindow(Settings)
         if inp.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = inp.Position
-            startPos = MainFrame.Position
+            startPos  = MainFrame.Position
         end
     end)
     UserInputService.InputChanged:Connect(function(inp)
@@ -555,18 +411,25 @@ function VonHub:CreateWindow(Settings)
         if inp.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
     end)
 
+    -- ── Minimise ──────────────────────────────────
+    local minimised = false
+    MinBtn.MouseButton1Click:Connect(function()
+        minimised = not minimised
+        if minimised then
+            tween(MainFrame, 0.35, { Size = UDim2.new(0, 620, 0, 38) })
+        else
+            tween(MainFrame, 0.35, { Size = UDim2.new(0, 620, 0, 400) })
+        end
+    end)
+
     -- ── Close ─────────────────────────────────────
     CloseBtn.MouseButton1Click:Connect(function()
         tween(MainFrame, 0.3, { BackgroundTransparency = 1 })
         task.wait(0.32)
         ScreenGui:Destroy()
     end)
-    CloseBtn.MouseEnter:Connect(function()
-        tween(CloseBtn, 0.15, { BackgroundColor3 = C.CloseHoverBg })
-    end)
-    CloseBtn.MouseLeave:Connect(function()
-        tween(CloseBtn, 0.15, { BackgroundColor3 = C.CloseBg })
-    end)
+    CloseBtn.MouseEnter:Connect(function() tween(CloseBtn, 0.15, { BackgroundColor3 = Color3.fromRGB(231, 76, 60) }) end)
+    CloseBtn.MouseLeave:Connect(function() tween(CloseBtn, 0.15, { BackgroundColor3 = C.Red }) end)
 
     -- ── Toggle UI Hotkey ──────────────────────────
     local hidden = false
@@ -583,23 +446,20 @@ function VonHub:CreateWindow(Settings)
     -- ── Tab Management ────────────────────────────
     local tabs = {}
     local firstTab = true
-    local miniRows = {} -- For Quick Access panel tracking
-    local miniGui = nil
 
     -- Save / Load helpers
     local function saveCfg()
         if not configEnabled then return end
         local data = {}
-        for flag, elem in pairs(VonHub.Flags) do
-            if elem.Type == "Toggle" then data[flag] = elem.CurrentValue
-            elseif elem.Type == "Slider" then data[flag] = elem.CurrentValue
+        for flag, elem in pairs(IceHub.Flags) do
+            if elem.Type == "Toggle"   then data[flag] = elem.CurrentValue
+            elseif elem.Type == "Slider"   then data[flag] = elem.CurrentValue
             elseif elem.Type == "Dropdown" then data[flag] = elem.CurrentOption
-            elseif elem.Type == "Keybind" then data[flag] = elem.CurrentKeybind
-            elseif elem.Type == "Input" then data[flag] = elem.CurrentValue
+            elseif elem.Type == "Keybind"  then data[flag] = elem.CurrentKeybind
+            elseif elem.Type == "Input"    then data[flag] = elem.CurrentValue
             end
         end
         if writefile then
-            if not isfolder then return end
             if not isfolder(configFolder) then makefolder(configFolder) end
             writefile(configFolder .. "/" .. configFile .. ".json", HttpService:JSONEncode(data))
         end
@@ -608,13 +468,13 @@ function VonHub:CreateWindow(Settings)
     -- Window API
     local Window = {}
 
-    function Window:Notify(data) VonHub:Notify(data) end
+    function Window:Notify(data) IceHub:Notify(data) end
 
-    -- ══════════════════════════════════════════════
+    -- ──────────────────────────────────────────────
     -- CreateTab
-    -- ══════════════════════════════════════════════
-    function Window:CreateTab(Name)
-        -- Sidebar navigation item
+    -- ──────────────────────────────────────────────
+    function Window:CreateTab(Name, Icon)
+        -- Sidebar button
         local tabBtn = new("TextButton", {
             Name = Name,
             Size = UDim2.new(1, -10, 0, 34),
@@ -625,45 +485,33 @@ function VonHub:CreateWindow(Settings)
             LayoutOrder = #tabs + 1,
         }, Sidebar)
 
-        -- Active indicator (left border)
         local leftAccent = new("Frame", {
             Size = UDim2.new(0, 2.5, 1, -8),
             Position = UDim2.new(0, 0, 0.5, 0),
             AnchorPoint = Vector2.new(0, 0.5),
-            BackgroundColor3 = C.NavActiveBorder,
+            BackgroundColor3 = C.AccentGlow,
             BackgroundTransparency = 1,
             BorderSizePixel = 0,
             ZIndex = 5,
         }, tabBtn)
         new("UICorner", { CornerRadius = UDim.new(0, 2) }, leftAccent)
 
-        -- Hover/Active background
         local tabBG = new("Frame", {
             Size = UDim2.new(1, 0, 1, 0),
-            BackgroundColor3 = C.NavActiveBg1,
+            BackgroundColor3 = C.Accent,
             BackgroundTransparency = 1,
             BorderSizePixel = 0,
-            ZIndex = 3,
+            ZIndex = 4,
         }, tabBtn)
         new("UICorner", { CornerRadius = UDim.new(0, 7) }, tabBG)
 
-        -- Active background gradient
-        new("UIGradient", {
-            Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, C.NavActiveBg1),
-                ColorSequenceKeypoint.new(0.3, C.NavActiveBg1),
-                ColorSequenceKeypoint.new(1, C.NavActiveBg2),
-            }),
-            Rotation = 0,
-        }, tabBG)
-
         local tabLabel = new("TextLabel", {
-            Size = UDim2.new(1, -20, 1, 0),
-            Position = UDim2.new(0, 20, 0, 0),
+            Size = UDim2.new(1, -18, 1, 0),
+            Position = UDim2.new(0, 18, 0, 0),
             BackgroundTransparency = 1,
             Text = Name,
-            TextColor3 = C.NavText,
-            TextSize = 13.5,
+            TextColor3 = C.TextDim,
+            TextSize = 13,
             Font = Enum.Font.Gotham,
             TextXAlignment = Enum.TextXAlignment.Left,
             ZIndex = 5,
@@ -682,32 +530,31 @@ function VonHub:CreateWindow(Settings)
         new("UIListLayout", { SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 0) }, page)
 
         local function selectTab()
+            -- Deselect all
             for _, t in ipairs(tabs) do
                 tween(t.btn, 0.2, { BackgroundTransparency = 1 })
-                tween(t.label, 0.2, { TextColor3 = C.NavText })
+                tween(t.label, 0.2, { TextColor3 = C.TextDim })
                 t.accent.BackgroundTransparency = 1
                 t.label.Font = Enum.Font.Gotham
-                t.label.Position = UDim2.new(0, 20, 0, 0)
                 t.page.Visible = false
             end
-            -- Select this tab
-            tween(tabBG, 0.25, { BackgroundTransparency = 0.55 })
-            tween(tabLabel, 0.2, { TextColor3 = C.NavActiveText })
-            leftAccent.BackgroundTransparency = 0.3
+            -- Select this
+            tween(tabBG, 0.25, { BackgroundTransparency = 0.7 })
+            tween(tabLabel, 0.2, { TextColor3 = C.White })
+            leftAccent.BackgroundTransparency = 0
             tabLabel.Font = Enum.Font.GothamBold
-            tabLabel.Position = UDim2.new(0, 17, 0, 0)
             page.Visible = true
         end
 
         tabBtn.MouseButton1Click:Connect(selectTab)
         tabBtn.MouseEnter:Connect(function()
             if tabLabel.Font ~= Enum.Font.GothamBold then
-                tween(tabLabel, 0.15, { TextColor3 = C.NavHover })
+                tween(tabLabel, 0.15, { TextColor3 = Color3.fromRGB(140, 150, 190) })
             end
         end)
         tabBtn.MouseLeave:Connect(function()
             if tabLabel.Font ~= Enum.Font.GothamBold then
-                tween(tabLabel, 0.15, { TextColor3 = C.NavText })
+                tween(tabLabel, 0.15, { TextColor3 = C.TextDim })
             end
         end)
 
@@ -719,321 +566,50 @@ function VonHub:CreateWindow(Settings)
             task.defer(selectTab)
         end
 
-        -- ══════════════════════════════════════════
-        -- Mini GUI (Quick Access Panel)
-        -- ══════════════════════════════════════════
-        if not miniGui then
-            miniGui = new("Frame", {
-                Name = "QuickAccess",
-                Size = UDim2.new(0, 170, 0, 180),
-                Position = UDim2.new(1, 12, 0, 0),
-                BackgroundColor3 = C.BG_MID,
-                BorderSizePixel = 0,
-                ClipsDescendants = true,
-                ZIndex = 2,
-            }, MainFrame)
-            new("UICorner", { CornerRadius = UDim.new(0, 8) }, miniGui)
-            new("UIStroke", { Color = C.MiniBorder, Thickness = 1, Transparency = 0.7 }, miniGui)
-
-            -- Mini gradient
-            new("UIGradient", {
-                Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, C.MiniBgTop),
-                    ColorSequenceKeypoint.new(0.6, C.MiniBgMid),
-                    ColorSequenceKeypoint.new(1, C.MiniBgBot),
-                }),
-                Rotation = -20,
-            }, miniGui)
-
-            -- Mini titlebar
-            local miniTitlebar = new("Frame", {
-                Size = UDim2.new(1, 0, 0, 24),
-                BackgroundColor3 = C.MiniTitleBg,
-                BackgroundTransparency = 0.98,
-                BorderSizePixel = 0,
-                ZIndex = 3,
-            }, miniGui)
-
-            local miniTitleText = new("TextLabel", {
-                Size = UDim2.new(1, -20, 1, 0),
-                Position = UDim2.new(0, 10, 0, 0),
-                BackgroundTransparency = 1,
-                Text = "QUICK ACCESS",
-                TextColor3 = C.MiniTitleText,
-                TextSize = 10.5,
-                Font = Enum.Font.GothamBold,
-                TextXAlignment = Enum.TextXAlignment.Left,
-                ZIndex = 4,
-            }, miniTitlebar)
-
-            -- Mini title separator
-            local miniTitleSep = new("Frame", {
-                Size = UDim2.new(1, 0, 0, 1),
-                Position = UDim2.new(0, 0, 0, 24),
-                BackgroundColor3 = C.MiniTitleSep,
-                BorderSizePixel = 0,
-                ZIndex = 3,
-            }, miniGui)
-            addHorizontalGradient(miniTitleSep)
-
-            -- Mini body (scrollable list)
-            local miniBody = new("Frame", {
-                Name = "MiniBody",
-                Size = UDim2.new(1, 0, 1, -25),
-                Position = UDim2.new(0, 0, 0, 25),
-                BackgroundTransparency = 1,
-                BorderSizePixel = 0,
-                ZIndex = 3,
-            }, miniGui)
-
-            local miniList = new("UIListLayout", {
-                SortOrder = Enum.SortOrder.LayoutOrder,
-                Padding = UDim.new(0, 0),
-            }, miniBody)
-
-            -- Mini empty state
-            local miniEmpty = new("TextLabel", {
-                Name = "MiniEmpty",
-                Size = UDim2.new(1, 0, 0, 30),
-                BackgroundTransparency = 1,
-                Text = "Nothing pinned yet",
-                TextColor3 = C.MiniEmpty,
-                TextSize = 10,
-                Font = Enum.Font.Gotham,
-                TextXAlignment = Enum.TextXAlignment.Left,
-                ZIndex = 4,
-            }, miniBody)
-            new("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingTop = UDim.new(0, 8) }, miniEmpty)
-        end
-
-        local miniBody = miniGui:FindFirstChild("MiniBody")
-        local miniEmpty = miniBody and miniBody:FindFirstChild("MiniEmpty")
-        local miniList = miniBody and miniBody:FindFirstChildOfClass("UIListLayout")
-
-        local function renderMini()
-            if not miniBody then return end
-            -- Clear existing rows
-            for _, child in ipairs(miniBody:GetChildren()) do
-                if child:IsA("Frame") and child.Name == "MiniRow" then
-                    child:Destroy()
-                end
-            end
-
-            local starredRows = {}
-            for _, mr in ipairs(miniRows) do
-                if mr.starred then
-                    table.insert(starredRows, mr)
-                end
-            end
-
-            if #starredRows == 0 then
-                if miniEmpty then miniEmpty.Visible = true end
-                return
-            end
-
-            if miniEmpty then miniEmpty.Visible = false end
-
-            for _, mr in ipairs(starredRows) do
-                local mRow = new("Frame", {
-                    Name = "MiniRow",
-                    Size = UDim2.new(1, 0, 0, 24),
-                    BackgroundTransparency = 1,
-                    BorderSizePixel = 0,
-                    ZIndex = 4,
-                }, miniBody)
-
-                -- Bottom border
-                new("Frame", {
-                    Size = UDim2.new(1, 0, 0, 1),
-                    Position = UDim2.new(0, 0, 1, 0),
-                    BackgroundColor3 = C.MiniRowBorder,
-                    BackgroundTransparency = 0.9,
-                    BorderSizePixel = 0,
-                    ZIndex = 3,
-                }, mRow)
-
-                -- Label
-                local mLabel = new("TextLabel", {
-                    Size = UDim2.new(1, -60, 1, 0),
-                    Position = UDim2.new(0, 8, 0, 0),
-                    BackgroundTransparency = 1,
-                    Text = mr.label,
-                    TextColor3 = C.MiniLabel,
-                    TextSize = 10,
-                    Font = Enum.Font.Gotham,
-                    TextXAlignment = Enum.TextXAlignment.Left,
-                    TextTruncate = Enum.TextTruncate.AtEnd,
-                    ZIndex = 5,
-                }, mRow)
-
-                -- Bind display
-                if mr.bind then
-                    new("TextLabel", {
-                        Size = UDim2.new(0, 30, 1, 0),
-                        Position = UDim2.new(1, -38, 0, 0),
-                        BackgroundTransparency = 1,
-                        Text = "[" .. mr.bind .. "]",
-                        TextColor3 = C.MiniBind,
-                        TextSize = 9,
-                        Font = Enum.Font.Gotham,
-                        TextXAlignment = Enum.TextXAlignment.Right,
-                        ZIndex = 5,
-                    }, mRow)
-                end
-
-                -- Control (toggle or diamond)
-                if mr.componentType == "Toggle" then
-                    local mtTog = new("Frame", {
-                        Size = UDim2.new(0, 28, 0, 14),
-                        Position = UDim2.new(1, -8, 0.5, -7),
-                        AnchorPoint = Vector2.new(1, 0),
-                        BackgroundColor3 = C.MiniToggleTrackBg1,
-                        BorderSizePixel = 0,
-                        ZIndex = 5,
-                    }, mRow)
-                    new("UICorner", { CornerRadius = UDim.new(0, 7) }, mtTog)
-                    new("UIStroke", { Color = C.MiniToggleTrackBorder, Thickness = 1, Transparency = 0.65 }, mtTog)
-
-                    -- Track gradient
-                    new("UIGradient", {
-                        Color = ColorSequence.new({
-                            ColorSequenceKeypoint.new(0, C.MiniToggleTrackBg1),
-                            ColorSequenceKeypoint.new(1, C.MiniToggleTrackBg2),
-                        }),
-                        Rotation = 145,
-                    }, mtTog)
-
-                    -- Mini knob (diamond)
-                    local mtKnob = new("Frame", {
-                        Size = UDim2.new(0, 7, 0, 7),
-                        Position = UDim2.new(0, 3, 0.5, -3.5),
-                        Rotation = 45,
-                        BackgroundColor3 = C.MiniToggleKnobBg1,
-                        BorderSizePixel = 0,
-                        ZIndex = 6,
-                    }, mtTog)
-                    new("UICorner", { CornerRadius = UDim.new(0, 1) }, mtKnob)
-                    new("UIStroke", { Color = C.MiniToggleKnobBorder, Thickness = 1, Transparency = 0.6 }, mtKnob)
-
-                    -- Knob gradient
-                    new("UIGradient", {
-                        Color = ColorSequence.new({
-                            ColorSequenceKeypoint.new(0, C.MiniToggleKnobBg1),
-                            ColorSequenceKeypoint.new(1, C.MiniToggleKnobBg2),
-                        }),
-                        Rotation = 145,
-                    }, mtKnob)
-
-                    local mtInteract = new("TextButton", {
-                        Size = UDim2.new(1, 0, 1, 0),
-                        BackgroundTransparency = 1,
-                        Text = "",
-                        ZIndex = 7,
-                    }, mtTog)
-
-                    -- Update mini toggle state
-                    local function updateMiniToggle(val)
-                        if val then
-                            mtTog.BackgroundColor3 = C.MiniToggleTrackActiveBg1
-                            mtTog.BackgroundColor3 = C.MiniToggleTrackActiveBg1
-                            mtKnob.Position = UDim2.new(0, 16, 0.5, -3.5)
-                            mtKnob.BackgroundColor3 = C.MiniToggleKnobActiveBg1
-                        else
-                            mtTog.BackgroundColor3 = C.MiniToggleTrackBg1
-                            mtKnob.Position = UDim2.new(0, 3, 0.5, -3.5)
-                            mtKnob.BackgroundColor3 = C.MiniToggleKnobBg1
-                        end
-                    end
-
-                    mr.updateMini = updateMiniToggle
-                    if mr.currentValue ~= nil then updateMiniToggle(mr.currentValue) end
-
-                    mtInteract.MouseButton1Click:Connect(function()
-                        mr.onToggle()
-                    end)
-                elseif mr.componentType == "Action" then
-                    local mdBtn = new("TextButton", {
-                        Size = UDim2.new(0, 20, 0, 14),
-                        Position = UDim2.new(1, -4, 0.5, -7),
-                        AnchorPoint = Vector2.new(1, 0),
-                        BackgroundTransparency = 1,
-                        Text = "",
-                        ZIndex = 5,
-                    }, mRow)
-
-                    local md = new("Frame", {
-                        Size = UDim2.new(0, 8, 0, 8),
-                        Position = UDim2.new(0.5, -4, 0.5, -4),
-                        Rotation = 45,
-                        BackgroundColor3 = C.MiniDiamondBg1,
-                        BorderSizePixel = 0,
-                        ZIndex = 6,
-                    }, mdBtn)
-                    new("UICorner", { CornerRadius = UDim.new(0, 1) }, md)
-                    new("UIStroke", { Color = C.MiniDiamondBorder, Thickness = 1, Transparency = 0.6 }, md)
-
-                    new("UIGradient", {
-                        Color = ColorSequence.new({
-                            ColorSequenceKeypoint.new(0, C.MiniDiamondBg1),
-                            ColorSequenceKeypoint.new(1, C.MiniDiamondBg2),
-                        }),
-                        Rotation = 145,
-                    }, md)
-
-                    mdBtn.MouseButton1Click:Connect(function()
-                        md.BackgroundColor3 = C.MiniDiamondFlashBg1
-                        task.wait(0.4)
-                        md.BackgroundColor3 = C.MiniDiamondBg1
-                        if mr.callback then pcall(mr.callback) end
-                    end)
-                end
-            end
-        end
-
-        -- ══════════════════════════════════════════
-        -- Row builder (matching HTML ih-row)
-        -- ══════════════════════════════════════════
+        -- ─────────────────────────────────────────
+        -- Row builder helper
+        -- ─────────────────────────────────────────
         local function makeRow(labelText, order)
             local row = new("Frame", {
                 Name = labelText,
                 Size = UDim2.new(1, 0, 0, 42),
-                BackgroundColor3 = C.BG_TOP,
-                BackgroundTransparency = 1,
+                BackgroundColor3 = C.ElementBG,
+                BackgroundTransparency = 0,
                 BorderSizePixel = 0,
                 LayoutOrder = order or 0,
                 ZIndex = 3,
             }, page)
 
-            -- Bottom border
             local sep = new("Frame", {
                 Size = UDim2.new(1, 0, 0, 1),
-                Position = UDim2.new(0, 0, 1, 
-                -1),
-                BackgroundColor3 = C.RowBorder,
-                BackgroundTransparency = 0.88,
+                Position = UDim2.new(0, 0, 1, -1),
+                BackgroundColor3 = C.StrokeDim,
+                BackgroundTransparency = 0.7,
                 BorderSizePixel = 0,
                 ZIndex = 3,
             }, row)
 
-            -- Label
             local lbl = new("TextLabel", {
                 Size = UDim2.new(0.55, 0, 1, 0),
-                Position = UDim2.new(0, 16, 0, 0),
+                Position = UDim2.new(0, 14, 0, 0),
                 BackgroundTransparency = 1,
                 Text = labelText,
-                TextColor3 = C.RowLabel,
+                TextColor3 = C.Text,
                 TextSize = 13,
                 Font = Enum.Font.Gotham,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 ZIndex = 4,
             }, row)
 
+            row.MouseEnter:Connect(function() tween(row, 0.2, { BackgroundColor3 = C.ElementHov }) end)
+            row.MouseLeave:Connect(function() tween(row, 0.2, { BackgroundColor3 = C.ElementBG }) end)
+
             return row, lbl
         end
 
-        -- ══════════════════════════════════════════
+        -- ─────────────────────────────────────────
         -- Tab API
-        -- ══════════════════════════════════════════
+        -- ─────────────────────────────────────────
         local Tab = {}
         local rowCount = 0
 
@@ -1047,12 +623,12 @@ function VonHub:CreateWindow(Settings)
                 LayoutOrder = rowCount,
                 ZIndex = 3,
             }, page)
-            rowCount = rowCount + 1
+            rowCount += 1
 
             new("Frame", {
                 Size = UDim2.new(1, -28, 0, 1),
                 Position = UDim2.new(0, 14, 0.5, 0),
-                BackgroundColor3 = C.SepGlow1,
+                BackgroundColor3 = C.Section,
                 BackgroundTransparency = 0.6,
                 BorderSizePixel = 0,
                 ZIndex = 3,
@@ -1063,7 +639,7 @@ function VonHub:CreateWindow(Settings)
                 Position = UDim2.new(0, 14, 0, 0),
                 BackgroundTransparency = 1,
                 Text = SectionName,
-                TextColor3 = C.SepGlow1,
+                TextColor3 = C.Section,
                 TextSize = 11,
                 Font = Enum.Font.GothamBold,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -1081,35 +657,36 @@ function VonHub:CreateWindow(Settings)
         function Tab:CreateDivider()
             local div = new("Frame", {
                 Size = UDim2.new(1, 0, 0, 1),
-                BackgroundColor3 = C.RowBorder,
+                BackgroundColor3 = C.StrokeDim,
                 BackgroundTransparency = 0.5,
                 BorderSizePixel = 0,
                 LayoutOrder = rowCount,
                 ZIndex = 3,
             }, page)
-            rowCount = rowCount + 1
+            rowCount += 1
             local DivValue = {}
             function DivValue:Set(vis) div.Visible = vis end
             return DivValue
         end
 
         -- ── Label ─────────────────────────────────
-        function Tab:CreateLabel(LabelText)
+        function Tab:CreateLabel(LabelText, Color)
             local lf = new("Frame", {
                 Size = UDim2.new(1, 0, 0, 36),
-                BackgroundTransparency = 1,
+                BackgroundColor3 = Color and Color or C.ElementBG,
+                BackgroundTransparency = Color and 0 or 0.4,
                 BorderSizePixel = 0,
                 LayoutOrder = rowCount,
                 ZIndex = 3,
             }, page)
-            rowCount = rowCount + 1
+            rowCount += 1
 
             new("TextLabel", {
                 Size = UDim2.new(1, -28, 1, 0),
                 Position = UDim2.new(0, 14, 0, 0),
                 BackgroundTransparency = 1,
                 Text = LabelText,
-                TextColor3 = C.RowLabel,
+                TextColor3 = C.Text,
                 TextSize = 13,
                 Font = Enum.Font.Gotham,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -1126,30 +703,23 @@ function VonHub:CreateWindow(Settings)
             local pf = new("Frame", {
                 Size = UDim2.new(1, 0, 0, 0),
                 AutomaticSize = Enum.AutomaticSize.Y,
-                BackgroundTransparency = 1,
+                BackgroundColor3 = C.ElementBG,
+                BackgroundTransparency = 0.3,
                 BorderSizePixel = 0,
                 LayoutOrder = rowCount,
                 ZIndex = 3,
             }, page)
-            rowCount = rowCount + 1
+            rowCount += 1
 
-            new("UIPadding", {
-                PaddingTop = UDim.new(0, 8),
-                PaddingBottom = UDim.new(0, 8),
-                PaddingLeft = UDim.new(0, 14),
-                PaddingRight = UDim.new(0, 14),
-            }, pf)
-
-            new("UIListLayout", {
-                SortOrder = Enum.SortOrder.LayoutOrder,
-                Padding = UDim.new(0, 4),
-            }, pf)
+            new("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8),
+                PaddingLeft = UDim.new(0, 14), PaddingRight = UDim.new(0, 14) }, pf)
+            new("UIListLayout", { SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 4) }, pf)
 
             local titleLbl = new("TextLabel", {
                 Size = UDim2.new(1, 0, 0, 18),
                 BackgroundTransparency = 1,
                 Text = PSettings.Title or "",
-                TextColor3 = C.RowLabel,
+                TextColor3 = C.Text,
                 TextSize = 13,
                 Font = Enum.Font.GothamBold,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -1162,7 +732,7 @@ function VonHub:CreateWindow(Settings)
                 AutomaticSize = Enum.AutomaticSize.Y,
                 BackgroundTransparency = 1,
                 Text = PSettings.Content or "",
-                TextColor3 = C.NavText,
+                TextColor3 = C.TextDim,
                 TextSize = 12,
                 Font = Enum.Font.Gotham,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -1179,62 +749,39 @@ function VonHub:CreateWindow(Settings)
             return PV
         end
 
-        -- ── Button (Diamond action button) ────────
+        -- ── Button ────────────────────────────────
         function Tab:CreateButton(BSettings)
             local row, lbl = makeRow(BSettings.Name or "Button", rowCount)
-            rowCount = rowCount + 1
+            rowCount += 1
+            row.Size = UDim2.new(1, 0, 0, 42)
 
-            -- Diamond button (matches ih-diamond-btn)
-            local diamondBtn = new("TextButton", {
-                Size = UDim2.new(0, 20, 0, 20),
-                Position = UDim2.new(1, -32, 0.5, -10),
+            -- Diamond action indicator (right side)
+            local diamond = new("Frame", {
+                Size = UDim2.new(0, 12, 0, 12),
+                Position = UDim2.new(1, -22, 0.5, -6),
+                Rotation = 45,
+                BackgroundColor3 = C.Knob,
+                BorderSizePixel = 0,
+                ZIndex = 4,
+            }, row)
+            new("UICorner", { CornerRadius = UDim.new(0, 2) }, diamond)
+            new("UIStroke", { Color = C.Stroke, Thickness = 1, Transparency = 0.4 }, diamond)
+
+            local interact = new("TextButton", {
+                Size = UDim2.new(1, 0, 1, 0),
                 BackgroundTransparency = 1,
                 Text = "",
                 ZIndex = 5,
             }, row)
 
-            local diamond = new("Frame", {
-                Size = UDim2.new(0, 12, 0, 12),
-                Position = UDim2.new(0.5, -6, 0.5, -6),
-                Rotation = 45,
-                BackgroundColor3 = C.DiamondBg1,
-                BorderSizePixel = 0,
-                ZIndex = 6,
-            }, diamondBtn)
-            new("UICorner", { CornerRadius = UDim.new(0, 2) }, diamond)
-            new("UIStroke", { Color = C.DiamondBorder, Thickness = 1, Transparency = 0.55 }, diamond)
-
-            -- Diamond gradient
-            new("UIGradient", {
-                Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, C.DiamondBg1),
-                    ColorSequenceKeypoint.new(1, C.DiamondBg2),
-                }),
-                Rotation = 145,
-            }, diamond)
-
-            diamondBtn.MouseButton1Click:Connect(function()
-                -- Flash effect
-                diamond.BackgroundColor3 = C.DiamondFlashBg1
-                diamond.ChildAdded:Wait()
-                task.wait(0.15)
+            interact.MouseButton1Click:Connect(function()
+                tween(diamond, 0.15, { BackgroundColor3 = C.KnobOn })
+                tween(row, 0.15, { BackgroundColor3 = C.ElementHov })
                 local ok, err = pcall(BSettings.Callback)
                 task.wait(0.25)
-                diamond.BackgroundColor3 = C.DiamondBg1
-                if not ok then
-                    VonHub:Notify({
-                        Title = "Error",
-                        Content = tostring(err),
-                        Duration = 3,
-                    })
-                end
-            end)
-
-            diamondBtn.MouseEnter:Connect(function()
-                diamond.BackgroundColor3 = C.DiamondHoverBg1
-            end)
-            diamondBtn.MouseLeave:Connect(function()
-                diamond.BackgroundColor3 = C.DiamondBg1
+                tween(diamond, 0.25, { BackgroundColor3 = C.Knob })
+                tween(row, 0.25, { BackgroundColor3 = C.ElementBG })
+                if not ok then warn("IceHub Button Error: " .. tostring(err)) end
             end)
 
             local BV = {}
@@ -1248,306 +795,65 @@ function VonHub:CreateWindow(Settings)
             TSettings.CurrentValue = TSettings.CurrentValue or false
 
             local row, lbl = makeRow(TSettings.Name or "Toggle", rowCount)
-            rowCount = rowCount + 1
+            rowCount += 1
 
-            -- X circle button
-            local xBtn = new("TextButton", {
-                Size = UDim2.new(0, 18, 0, 18),
-                Position = UDim2.new(1, -82, 0.5, -9),
-                BackgroundColor3 = C.CircleBg1,
-                BorderSizePixel = 0,
-                Text = "✕",
-                TextColor3 = C.CircleText,
-                TextSize = 8,
-                Font = Enum.Font.GothamBold,
-                ZIndex = 5,
-            }, row)
-            new("UICorner", { CornerRadius = UDim.new(1, 0) }, xBtn)
-            new("UIStroke", { Color = C.CircleBorder, Thickness = 1, Transparency = 0.6 }, xBtn)
-
-            -- X button gradient
-            new("UIGradient", {
-                Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, C.CircleBg1),
-                    ColorSequenceKeypoint.new(1, C.CircleBg2),
-                }),
-                Rotation = 145,
-            }, xBtn)
-
-            -- Star circle button
-            local starBtn = new("TextButton", {
-                Size = UDim2.new(0, 18, 0, 18),
-                Position = UDim2.new(1, -62, 0.5, -9),
-                BackgroundColor3 = C.CircleBg1,
-                BorderSizePixel = 0,
-                Text = "☆",
-                TextColor3 = C.StarText,
-                TextSize = 11,
-                Font = Enum.Font.Gotham,
-                ZIndex = 5,
-            }, row)
-            new("UICorner", { CornerRadius = UDim.new(1, 0) }, starBtn)
-            new("UIStroke", { Color = C.StarBorder, Thickness = 1, Transparency = 0.6 }, starBtn)
-
-            new("UIGradient", {
-                Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, C.CircleBg1),
-                    ColorSequenceKeypoint.new(1, C.CircleBg2),
-                }),
-                Rotation = 145,
-            }, starBtn)
-
-            local isStarred = false
-
-            -- Bind pill
-            local bindPill = new("TextButton", {
-                Size = UDim2.new(0, 30, 0, 18),
-                Position = UDim2.new(1, -42, 0.5, -9),
-                BackgroundColor3 = C.BindBg1,
-                BorderSizePixel = 0,
-                Text = "[..]",
-                TextColor3 = C.BindText,
-                TextSize = 9.5,
-                Font = Enum.Font.Gotham,
-                ZIndex = 5,
-            }, row)
-            new("UICorner", { CornerRadius = UDim.new(0, 4) }, bindPill)
-            new("UIStroke", { Color = C.BindBorder, Thickness = 1, Transparency = 0.65 }, bindPill)
-
-            new("UIGradient", {
-                Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, C.BindBg1),
-                    ColorSequenceKeypoint.new(1, C.BindBg2),
-                }),
-                Rotation = 145,
-            }, bindPill)
-
-            local currentBind = nil
-            local isListening = false
-
-            -- Toggle component
-            local toggleTrack = new("Frame", {
-                Size = UDim2.new(0, 40, 0, 20),
-                Position = UDim2.new(1, -10, 0.5, -10),
-                AnchorPoint = Vector2.new(1, 0),
-                BackgroundColor3 = C.ToggleTrackBg1,
+            -- Toggle track
+            local trackW, trackH = 40, 20
+            local track = new("Frame", {
+                Size = UDim2.new(0, trackW, 0, trackH),
+                Position = UDim2.new(1, -(trackW + 12), 0.5, -trackH/2),
+                BackgroundColor3 = C.ToggleOff,
                 BorderSizePixel = 0,
                 ZIndex = 4,
             }, row)
-            new("UICorner", { CornerRadius = UDim.new(0, 10) }, toggleTrack)
-            new("UIStroke", { Color = C.ToggleTrackBorder, Thickness = 1, Transparency = 0.65 }, toggleTrack)
+            new("UICorner", { CornerRadius = UDim.new(0, 10) }, track)
+            new("UIStroke", { Color = C.StrokeDim, Thickness = 1, Transparency = 0.3 }, track)
 
-            new("UIGradient", {
-                Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, C.ToggleTrackBg1),
-                    ColorSequenceKeypoint.new(1, C.ToggleTrackBg2),
-                }),
-                Rotation = 145,
-            }, toggleTrack)
-
-            -- Toggle knob (diamond)
-            local toggleKnob = new("Frame", {
-                Size = UDim2.new(0, 11, 0, 11),
-                Position = UDim2.new(0, 5, 0.5, -5.5),
+            -- Diamond knob
+            local knobSize = 11
+            local knob = new("Frame", {
+                Size = UDim2.new(0, knobSize, 0, knobSize),
+                Position = UDim2.new(0, 5, 0.5, -knobSize/2),
                 Rotation = 45,
-                BackgroundColor3 = C.ToggleKnobBg1,
+                BackgroundColor3 = C.Knob,
                 BorderSizePixel = 0,
                 ZIndex = 5,
-            }, toggleTrack)
-            new("UICorner", { CornerRadius = UDim.new(0, 2) }, toggleKnob)
-            new("UIStroke", { Color = C.ToggleKnobBorder, Thickness = 1, Transparency = 0.55 }, toggleKnob)
-
-            new("UIGradient", {
-                Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, C.ToggleKnobBg1),
-                    ColorSequenceKeypoint.new(1, C.ToggleKnobBg2),
-                }),
-                Rotation = 145,
-            }, toggleKnob)
-
-            -- Mini row tracking
-            local miniRowData = {
-                label = TSettings.Name or "Toggle",
-                starred = false,
-                bind = nil,
-                componentType = "Toggle",
-                currentValue = TSettings.CurrentValue,
-                onToggle = function()
-                    applyToggle(not TSettings.CurrentValue, true)
-                end,
-            }
-            table.insert(miniRows, miniRowData)
-
-            local function updateXBtn()
-                if currentBind or isStarred then
-                    xBtn.TextColor3 = C.ResetHasStateText
-                    xBtn.BackgroundColor3 = C.ResetHasStateText
-                else
-                    xBtn.TextColor3 = C.CircleText
-                    xBtn.BackgroundColor3 = C.CircleBg1
-                end
-            end
-
-            local function updateStarBtn()
-                if isStarred then
-                    starBtn.Text = "★"
-                    starBtn.TextColor3 = C.StarActiveText
-                    starBtn.BackgroundColor3 = C.StarActiveBg1
-                else
-                    starBtn.Text = "☆"
-                    starBtn.TextColor3 = C.StarText
-                    starBtn.BackgroundColor3 = C.CircleBg1
-                end
-            end
-
-            local function updateMiniStar()
-                miniRowData.starred = isStarred
-                renderMini()
-            end
+            }, track)
+            new("UICorner", { CornerRadius = UDim.new(0, 2) }, knob)
+            new("UIStroke", { Color = C.Stroke, Thickness = 1, Transparency = 0.4 }, knob)
 
             local function applyToggle(val, fireCallback)
                 TSettings.CurrentValue = val
-                miniRowData.currentValue = val
                 if val then
-                    tween(toggleTrack, 0.25, { BackgroundColor3 = C.ToggleTrackActiveBg1 })
-                    tween(toggleKnob, 0.22, {
-                        Position = UDim2.new(0, 24, 0.5, -5.5),
-                        BackgroundColor3 = C.ToggleKnobActiveBg1,
-                    })
+                    tween(track, 0.25, { BackgroundColor3 = C.ToggleOn })
+                    tween(knob, 0.22, { Position = UDim2.new(0, trackW - knobSize - 5, 0.5, -knobSize/2), BackgroundColor3 = C.KnobOn })
                 else
-                    tween(toggleTrack, 0.25, { BackgroundColor3 = C.ToggleTrackBg1 })
-                    tween(toggleKnob, 0.22, {
-                        Position = UDim2.new(0, 5, 0.5, -5.5),
-                        BackgroundColor3 = C.ToggleKnobBg1,
-                    })
-                end
-                if miniRowData.updateMini then
-                    miniRowData.updateMini(val)
+                    tween(track, 0.25, { BackgroundColor3 = C.ToggleOff })
+                    tween(knob, 0.22, { Position = UDim2.new(0, 5, 0.5, -knobSize/2), BackgroundColor3 = C.Knob })
                 end
                 if fireCallback then
                     local ok, err = pcall(TSettings.Callback, val)
-                    if not ok then
-                        VonHub:Notify({
-                            Title = "Error",
-                            Content = tostring(err),
-                            Duration = 3,
-                        })
-                    end
+                    if not ok then warn("IceHub Toggle Error: " .. tostring(err)) end
                 end
                 if TSettings.Flag then saveCfg() end
             end
 
-            -- Set initial state
             applyToggle(TSettings.CurrentValue, false)
 
-            -- Toggle interaction
-            local toggleInteract = new("TextButton", {
+            local interact = new("TextButton", {
                 Size = UDim2.new(1, 0, 1, 0),
                 BackgroundTransparency = 1,
                 Text = "",
                 ZIndex = 6,
-            }, toggleTrack)
-            toggleInteract.MouseButton1Click:Connect(function()
+            }, row)
+            interact.MouseButton1Click:Connect(function()
                 applyToggle(not TSettings.CurrentValue, true)
             end)
 
-            -- X button (clear)
-            xBtn.MouseButton1Click:Connect(function()
-                currentBind = nil
-                isStarred = false
-                bindPill.Text = "[..]"
-                bindPill.Size = UDim2.new(0, 30, 0, 18)
-                updateXBtn()
-                updateStarBtn()
-                updateMiniStar()
-            end)
-
-            xBtn.MouseEnter:Connect(function()
-                tween(xBtn, 0.15, { BackgroundColor3 = C.ResetHoverBg1 })
-            end)
-            xBtn.MouseLeave:Connect(function()
-                updateXBtn()
-            end)
-
-            -- Star button
-            starBtn.MouseButton1Click:Connect(function()
-                isStarred = not isStarred
-                updateStarBtn()
-                updateMiniStar()
-                updateXBtn()
-            end)
-
-            starBtn.MouseEnter:Connect(function()
-                if not isStarred then
-                    tween(starBtn, 0.15, { TextColor3 = C.StarHoverText })
-                end
-            end)
-            starBtn.MouseLeave:Connect(function()
-                updateStarBtn()
-            end)
-
-            -- Bind pill
-            bindPill.MouseButton1Click:Connect(function()
-                if isListening then return end
-                isListening = true
-                bindPill.Text = "···"
-                bindPill.Size = UDim2.new(0, 30, 0, 18)
-                tween(bindPill, 0.2, {
-                    TextColor3 = C.BindListeningText,
-                })
-
-                local conn
-                conn = UserInputService.InputBegan:Connect(function(inp, proc)
-                    if inp.KeyCode ~= Enum.KeyCode.Unknown and not proc then
-                        local keyName = inp.KeyCode.Name
-                        currentBind = keyName
-                        miniRowData.bind = keyName
-                        bindPill.Text = "[" .. keyName .. "]"
-                        bindPill.Size = UDim2.new(0, 40, 0, 18)
-                        tween(bindPill, 0.2, { TextColor3 = C.BindBoundText })
-                        isListening = false
-                        conn:Disconnect()
-                        updateXBtn()
-                        renderMini()
-                        VonHub:Notify({
-                            Title = "Bind Set",
-                            Content = "Bound to: " .. keyName,
-                            Duration = 2.2,
-                        })
-                    end
-                end)
-            end)
-
-            bindPill.MouseEnter:Connect(function()
-                if not isListening then
-                    tween(bindPill, 0.15, { TextColor3 = C.BindHoverText })
-                end
-            end)
-            bindPill.MouseLeave:Connect(function()
-                if not isListening then
-                    if currentBind then
-                        tween(bindPill, 0.15, { TextColor3 = C.BindBoundText })
-                    else
-                        tween(bindPill, 0.15, { TextColor3 = C.BindText })
-                    end
-                end
-            end)
-
-            -- Set method
-            function TSettings:Set(v)
-                applyToggle(v, true)
-            end
-
-            -- Trigger bound key callbacks
-            UserInputService.InputBegan:Connect(function(inp, proc)
-                if proc or isListening then return end
-                if currentBind and inp.KeyCode == Enum.KeyCode[currentBind] then
-                    applyToggle(not TSettings.CurrentValue, true)
-                end
-            end)
+            function TSettings:Set(v) applyToggle(v, true) end
 
             if TSettings.Flag then
-                VonHub.Flags[TSettings.Flag] = TSettings
+                IceHub.Flags[TSettings.Flag] = TSettings
             end
             return TSettings
         end
@@ -1556,7 +862,7 @@ function VonHub:CreateWindow(Settings)
         function Tab:CreateSlider(SSettings)
             SSettings.Type = "Slider"
             local row, lbl = makeRow(SSettings.Name or "Slider", rowCount)
-            rowCount = rowCount + 1
+            rowCount += 1
             row.Size = UDim2.new(1, 0, 0, 54)
 
             local min, max = SSettings.Range[1], SSettings.Range[2]
@@ -1565,11 +871,10 @@ function VonHub:CreateWindow(Settings)
 
             local valLabel = new("TextLabel", {
                 Size = UDim2.new(0, 60, 0, 14),
-                Position = UDim2.new(1, -10, 0, 14),
-                AnchorPoint = Vector2.new(1, 0),
+                Position = UDim2.new(1, -74, 0, 14),
                 BackgroundTransparency = 1,
                 Text = tostring(val) .. (SSettings.Suffix and " " .. SSettings.Suffix or ""),
-                TextColor3 = C.SepGlow2,
+                TextColor3 = C.AccentGlow,
                 TextSize = 11,
                 Font = Enum.Font.GothamBold,
                 TextXAlignment = Enum.TextXAlignment.Right,
@@ -1580,16 +885,16 @@ function VonHub:CreateWindow(Settings)
             local trackBar = new("Frame", {
                 Size = UDim2.new(1, -28, 0, 5),
                 Position = UDim2.new(0, 14, 0, 34),
-                BackgroundColor3 = C.ToggleTrackBg1,
+                BackgroundColor3 = C.SliderBG,
                 BorderSizePixel = 0,
                 ZIndex = 4,
             }, row)
             new("UICorner", { CornerRadius = UDim.new(0, 3) }, trackBar)
-            new("UIStroke", { Color = C.ToggleTrackBorder, Thickness = 1, Transparency = 0.65 }, trackBar)
+            new("UIStroke", { Color = C.StrokeDim, Thickness = 1, Transparency = 0.4 }, trackBar)
 
             local fillBar = new("Frame", {
                 Size = UDim2.new(0, 0, 1, 0),
-                BackgroundColor3 = C.SepGlow1,
+                BackgroundColor3 = C.SliderFill,
                 BorderSizePixel = 0,
                 ZIndex = 5,
             }, trackBar)
@@ -1603,13 +908,7 @@ function VonHub:CreateWindow(Settings)
                 valLabel.Text = tostring(newVal) .. (SSettings.Suffix and " " .. SSettings.Suffix or "")
                 if fire then
                     local ok, err = pcall(SSettings.Callback, newVal)
-                    if not ok then
-                        VonHub:Notify({
-                            Title = "Error",
-                            Content = tostring(err),
-                            Duration = 3,
-                        })
-                    end
+                    if not ok then warn("IceHub Slider Error: "..tostring(err)) end
                     if SSettings.Flag then saveCfg() end
                 end
             end
@@ -1639,7 +938,7 @@ function VonHub:CreateWindow(Settings)
 
             function SSettings:Set(v) setSliderVal(v, true) end
 
-            if SSettings.Flag then VonHub.Flags[SSettings.Flag] = SSettings end
+            if SSettings.Flag then IceHub.Flags[SSettings.Flag] = SSettings end
             return SSettings
         end
 
@@ -1647,39 +946,32 @@ function VonHub:CreateWindow(Settings)
         function Tab:CreateInput(ISettings)
             ISettings.Type = "Input"
             local row, lbl = makeRow(ISettings.Name or "Input", rowCount)
-            rowCount = rowCount + 1
+            rowCount += 1
+            row.Size = UDim2.new(1, 0, 0, 42)
 
             local boxW = 110
             local inputBox = new("TextBox", {
                 Size = UDim2.new(0, boxW, 0, 24),
                 Position = UDim2.new(1, -(boxW + 10), 0.5, -12),
-                AnchorPoint = Vector2.new(1, 0),
-                BackgroundColor3 = C.BindBg1,
-                BackgroundTransparency = 0.2,
+                BackgroundColor3 = C.InputBG,
                 BorderSizePixel = 0,
                 Text = ISettings.CurrentValue or "",
                 PlaceholderText = ISettings.PlaceholderText or "...",
-                PlaceholderColor3 = C.BindText,
-                TextColor3 = C.RowLabel,
+                PlaceholderColor3 = C.TextMuted,
+                TextColor3 = C.Text,
                 TextSize = 12,
                 Font = Enum.Font.Gotham,
                 ClearTextOnFocus = false,
                 ZIndex = 5,
             }, row)
-            new("UICorner", { CornerRadius = UDim.new(0, 4) }, inputBox)
-            new("UIStroke", { Color = C.BindBorder, Thickness = 1, Transparency = 0.65 }, inputBox)
+            new("UICorner", { CornerRadius = UDim.new(0, 5) }, inputBox)
+            new("UIStroke", { Color = C.StrokeDim, Thickness = 1, Transparency = 0.3 }, inputBox)
             new("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }, inputBox)
 
             inputBox.FocusLost:Connect(function()
                 ISettings.CurrentValue = inputBox.Text
                 local ok, err = pcall(ISettings.Callback, inputBox.Text)
-                if not ok then
-                    VonHub:Notify({
-                        Title = "Error",
-                        Content = tostring(err),
-                        Duration = 3,
-                    })
-                end
+                if not ok then warn("IceHub Input Error: "..tostring(err)) end
                 if ISettings.RemoveTextAfterFocusLost then inputBox.Text = "" end
                 if ISettings.Flag then saveCfg() end
             end)
@@ -1690,7 +982,7 @@ function VonHub:CreateWindow(Settings)
                 pcall(ISettings.Callback, v)
             end
 
-            if ISettings.Flag then VonHub.Flags[ISettings.Flag] = ISettings end
+            if ISettings.Flag then IceHub.Flags[ISettings.Flag] = ISettings end
             return ISettings
         end
 
@@ -1708,30 +1000,30 @@ function VonHub:CreateWindow(Settings)
             local container = new("Frame", {
                 Name = DSettings.Name,
                 Size = UDim2.new(1, 0, 0, rowH),
-                BackgroundTransparency = 1,
+                BackgroundColor3 = C.ElementBG,
+                BackgroundTransparency = 0,
                 BorderSizePixel = 0,
                 LayoutOrder = rowCount,
                 ClipsDescendants = true,
                 ZIndex = 3,
             }, page)
-            rowCount = rowCount + 1
+            rowCount += 1
 
-            -- Bottom border
             new("Frame", {
                 Size = UDim2.new(1, 0, 0, 1),
                 Position = UDim2.new(0, 0, 0, rowH - 1),
-                BackgroundColor3 = C.RowBorder,
-                BackgroundTransparency = 0.88,
+                BackgroundColor3 = C.StrokeDim,
+                BackgroundTransparency = 0.7,
                 BorderSizePixel = 0,
                 ZIndex = 3,
             }, container)
 
             local headerLabel = new("TextLabel", {
                 Size = UDim2.new(0.55, 0, 0, rowH),
-                Position = UDim2.new(0, 16, 0, 0),
+                Position = UDim2.new(0, 14, 0, 0),
                 BackgroundTransparency = 1,
                 Text = DSettings.Name or "Dropdown",
-                TextColor3 = C.RowLabel,
+                TextColor3 = C.Text,
                 TextSize = 13,
                 Font = Enum.Font.Gotham,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -1743,7 +1035,7 @@ function VonHub:CreateWindow(Settings)
                 Position = UDim2.new(0.6, -10, 0, 0),
                 BackgroundTransparency = 1,
                 Text = #DSettings.CurrentOption > 0 and DSettings.CurrentOption[1] or "None",
-                TextColor3 = C.SepGlow2,
+                TextColor3 = C.AccentGlow,
                 TextSize = 12,
                 Font = Enum.Font.GothamMedium,
                 TextXAlignment = Enum.TextXAlignment.Right,
@@ -1753,11 +1045,10 @@ function VonHub:CreateWindow(Settings)
             -- Arrow
             local arrow = new("TextLabel", {
                 Size = UDim2.new(0, 16, 0, rowH),
-                Position = UDim2.new(1, -10, 0, 0),
-                AnchorPoint = Vector2.new(1, 0),
+                Position = UDim2.new(1, -24, 0, 0),
                 BackgroundTransparency = 1,
                 Text = "▾",
-                TextColor3 = C.NavText,
+                TextColor3 = C.TextDim,
                 TextSize = 12,
                 Font = Enum.Font.GothamBold,
                 ZIndex = 4,
@@ -1767,8 +1058,7 @@ function VonHub:CreateWindow(Settings)
             local optList = new("Frame", {
                 Size = UDim2.new(1, 0, 0, 0),
                 Position = UDim2.new(0, 0, 0, rowH),
-                BackgroundColor3 = C.BG_TOP,
-                BackgroundTransparency = 0.3,
+                BackgroundColor3 = C.DropBG,
                 BorderSizePixel = 0,
                 ZIndex = 4,
             }, container)
@@ -1779,11 +1069,11 @@ function VonHub:CreateWindow(Settings)
                     if c:IsA("Frame") then c:Destroy() end
                 end
                 for i, opt in ipairs(DSettings.Options or {}) do
-                    local isSelected = table.find(DSettings.CurrentOption, opt) ~= nil
                     local optRow = new("Frame", {
                         Size = UDim2.new(1, 0, 0, 34),
-                        BackgroundColor3 = isSelected and C.NavActiveBg1 or C.BG_TOP,
-                        BackgroundTransparency = isSelected and 0.55 or 0.3,
+                        BackgroundColor3 = table.find(DSettings.CurrentOption, opt)
+                            and C.DropSel or C.DropBG,
+                        BackgroundTransparency = 0,
                         BorderSizePixel = 0,
                         LayoutOrder = i,
                         ZIndex = 5,
@@ -1791,10 +1081,10 @@ function VonHub:CreateWindow(Settings)
 
                     new("TextLabel", {
                         Size = UDim2.new(1, -14, 1, 0),
-                        Position = UDim2.new(0, 16, 0, 0),
+                        Position = UDim2.new(0, 14, 0, 0),
                         BackgroundTransparency = 1,
                         Text = opt,
-                        TextColor3 = isSelected and C.SepGlow2 or C.NavText,
+                        TextColor3 = table.find(DSettings.CurrentOption, opt) and C.AccentGlow or C.TextDim,
                         TextSize = 12,
                         Font = Enum.Font.Gotham,
                         TextXAlignment = Enum.TextXAlignment.Left,
@@ -1812,6 +1102,7 @@ function VonHub:CreateWindow(Settings)
                         if not DSettings.MultipleOptions then
                             DSettings.CurrentOption = { opt }
                             selectedText.Text = opt
+                            -- close
                             isOpen = false
                             local listH = #DSettings.Options * 34
                             tween(container, 0.25, { Size = UDim2.new(1, 0, 0, rowH) })
@@ -1837,14 +1128,11 @@ function VonHub:CreateWindow(Settings)
                     end)
 
                     optRow.MouseEnter:Connect(function()
-                        if not isSelected then
-                            tween(optRow, 0.15, { BackgroundColor3 = C.NavActiveBg2, BackgroundTransparency = 0.6 })
-                        end
+                        tween(optRow, 0.15, { BackgroundColor3 = C.ElementHov })
                     end)
                     optRow.MouseLeave:Connect(function()
-                        if not isSelected then
-                            tween(optRow, 0.15, { BackgroundColor3 = C.BG_TOP, BackgroundTransparency = 0.3 })
-                        end
+                        local sel = table.find(DSettings.CurrentOption, opt)
+                        tween(optRow, 0.15, { BackgroundColor3 = sel and C.DropSel or C.DropBG })
                     end)
                 end
 
@@ -1872,6 +1160,9 @@ function VonHub:CreateWindow(Settings)
                 end
             end)
 
+            container.MouseEnter:Connect(function() tween(container, 0.2, { BackgroundColor3 = C.ElementHov }) end)
+            container.MouseLeave:Connect(function() tween(container, 0.2, { BackgroundColor3 = C.ElementBG }) end)
+
             function DSettings:Set(opt)
                 if type(opt) == "string" then opt = { opt } end
                 DSettings.CurrentOption = opt
@@ -1882,19 +1173,10 @@ function VonHub:CreateWindow(Settings)
 
             function DSettings:Refresh(newOpts)
                 DSettings.Options = newOpts
-                -- Clear selections that no longer exist
-                local valid = {}
-                for _, sel in ipairs(DSettings.CurrentOption) do
-                    if table.find(newOpts, sel) then
-                        table.insert(valid, sel)
-                    end
-                end
-                DSettings.CurrentOption = valid
-                selectedText.Text = #valid == 0 and "None" or (#valid == 1 and valid[1] or "Various")
                 buildOptions()
             end
 
-            if DSettings.Flag then VonHub.Flags[DSettings.Flag] = DSettings end
+            if DSettings.Flag then IceHub.Flags[DSettings.Flag] = DSettings end
             return DSettings
         end
 
@@ -1902,139 +1184,109 @@ function VonHub:CreateWindow(Settings)
         function Tab:CreateKeybind(KSettings)
             KSettings.Type = "Keybind"
             local row, lbl = makeRow(KSettings.Name or "Keybind", rowCount)
-            rowCount = rowCount + 1
+            rowCount += 1
 
             local listening = false
 
-            -- Bind pill (same style as toggle bind)
             local pill = new("TextButton", {
-                Size = UDim2.new(0, 40, 0, 18),
-                Position = UDim2.new(1, -12, 0.5, -9),
-                AnchorPoint = Vector2.new(1, 0),
-                BackgroundColor3 = C.BindBg1,
+                Size = UDim2.new(0, 40, 0, 20),
+                Position = UDim2.new(1, -52, 0.5, -10),
+                BackgroundColor3 = C.InputBG,
                 BorderSizePixel = 0,
                 Text = KSettings.CurrentKeybind and ("[" .. KSettings.CurrentKeybind .. "]") or "[..]",
-                TextColor3 = KSettings.CurrentKeybind and C.BindBoundText or C.BindText,
-                TextSize = 9.5,
-                Font = Enum.Font.Gotham,
+                TextColor3 = C.TextDim,
+                TextSize = 10,
+                Font = Enum.Font.GothamBold,
                 ZIndex = 5,
             }, row)
             new("UICorner", { CornerRadius = UDim.new(0, 4) }, pill)
-            new("UIStroke", { Color = C.BindBorder, Thickness = 1, Transparency = 0.65 }, pill)
-
-            new("UIGradient", {
-                Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, C.BindBg1),
-                    ColorSequenceKeypoint.new(1, C.BindBg2),
-                }),
-                Rotation = 145,
-            }, pill)
+            new("UIStroke", { Color = C.StrokeDim, Thickness = 1, Transparency = 0.4 }, pill)
 
             pill.MouseButton1Click:Connect(function()
                 if listening then return end
                 listening = true
                 pill.Text = "···"
-                tween(pill, 0.2, { TextColor3 = C.BindListeningText })
+                tween(pill, 0.2, { TextColor3 = C.AccentGlow })
                 local conn
                 conn = UserInputService.InputBegan:Connect(function(inp, proc)
                     if inp.KeyCode ~= Enum.KeyCode.Unknown and not proc then
                         local keyName = inp.KeyCode.Name
                         KSettings.CurrentKeybind = keyName
                         pill.Text = "[" .. keyName .. "]"
-                        tween(pill, 0.2, { TextColor3 = C.BindBoundText })
+                        tween(pill, 0.2, { TextColor3 = C.TextDim })
                         listening = false
                         conn:Disconnect()
-                        VonHub:Notify({
-                            Title = "Keybind Set",
-                            Content = "Bound to: " .. keyName,
-                            Duration = 2.2,
-                        })
+                        if not KSettings.HoldToInteract and KSettings.CallOnChange then
+                            pcall(KSettings.Callback, keyName)
+                        end
                         if KSettings.Flag then saveCfg() end
                     end
                 end)
             end)
 
-            pill.MouseEnter:Connect(function()
-                if not listening then
-                    tween(pill, 0.15, { TextColor3 = C.BindHoverText })
-                end
-            end)
-            pill.MouseLeave:Connect(function()
-                if not listening then
-                    if KSettings.CurrentKeybind then
-                        tween(pill, 0.15, { TextColor3 = C.BindBoundText })
-                    else
-                        tween(pill, 0.15, { TextColor3 = C.BindText })
-                    end
-                end
-            end)
-
             -- Trigger callback on press
-            UserInputService.InputBegan:Connect(function(inp, proc)
-                if proc or listening then return end
-                if KSettings.CurrentKeybind and inp.KeyCode == Enum.KeyCode[KSettings.CurrentKeybind] then
-                    if KSettings.HoldToInteract then
-                        local held = true
-                        local upConn
-                        upConn = UserInputService.InputEnded:Connect(function(i)
-                            if i.KeyCode == Enum.KeyCode[KSettings.CurrentKeybind] then
-                                held = false
-                                pcall(KSettings.Callback, false)
-                                upConn:Disconnect()
-                            end
-                        end)
-                        task.spawn(function()
-                            task.wait(0.2)
-                            while held do
-                                pcall(KSettings.Callback, true)
-                                task.wait(0.05)
-                            end
-                        end)
-                    else
-                        pcall(KSettings.Callback)
+            if not KSettings.CallOnChange then
+                UserInputService.InputBegan:Connect(function(inp, proc)
+                    if proc or listening then return end
+                    if KSettings.CurrentKeybind and inp.KeyCode == Enum.KeyCode[KSettings.CurrentKeybind] then
+                        if KSettings.HoldToInteract then
+                            local held = true
+                            local upConn
+                            upConn = UserInputService.InputEnded:Connect(function(i)
+                                if i.KeyCode == Enum.KeyCode[KSettings.CurrentKeybind] then
+                                    held = false
+                                    pcall(KSettings.Callback, false)
+                                    upConn:Disconnect()
+                                end
+                            end)
+                            task.spawn(function()
+                                task.wait(0.2)
+                                while held do
+                                    pcall(KSettings.Callback, true)
+                                    task.wait(0.05)
+                                end
+                            end)
+                        else
+                            pcall(KSettings.Callback)
+                        end
                     end
-                end
-            end)
+                end)
+            end
 
             function KSettings:Set(key)
                 KSettings.CurrentKeybind = key
                 pill.Text = "[" .. key .. "]"
-                tween(pill, 0.2, { TextColor3 = C.BindBoundText })
             end
 
-            if KSettings.Flag then VonHub.Flags[KSettings.Flag] = KSettings end
+            if KSettings.Flag then IceHub.Flags[KSettings.Flag] = KSettings end
             return KSettings
         end
 
-        -- ── ColorPicker ───────────────────────────
+        -- ── ColorPicker (simplified) ──────────────
         function Tab:CreateColorPicker(CPSettings)
             CPSettings.Type = "ColorPicker"
             local row, lbl = makeRow(CPSettings.Name or "Color Picker", rowCount)
-            rowCount = rowCount + 1
+            rowCount += 1
             row.Size = UDim2.new(1, 0, 0, 42)
 
             local color = CPSettings.Color or Color3.fromRGB(255, 255, 255)
             local h, s, v = color:ToHSV()
 
-            -- Preview diamond
             local preview = new("Frame", {
                 Size = UDim2.new(0, 24, 0, 24),
-                Position = UDim2.new(1, -12, 0.5, -12),
-                AnchorPoint = Vector2.new(1, 0),
-                Rotation = 45,
+                Position = UDim2.new(1, -38, 0.5, -12),
                 BackgroundColor3 = color,
                 BorderSizePixel = 0,
                 ZIndex = 5,
             }, row)
             new("UICorner", { CornerRadius = UDim.new(0, 5) }, preview)
-            new("UIStroke", { Color = C.DiamondBorder, Thickness = 1, Transparency = 0.55 }, preview)
+            new("UIStroke", { Color = C.Stroke, Thickness = 1, Transparency = 0.3 }, preview)
 
             -- Expanded picker area
             local pickerFrame = new("Frame", {
                 Size = UDim2.new(1, 0, 0, 0),
                 Position = UDim2.new(0, 0, 0, 42),
-                BackgroundColor3 = C.BG_TOP,
-                BackgroundTransparency = 0.3,
+                BackgroundColor3 = C.DropBG,
                 BorderSizePixel = 0,
                 ClipsDescendants = true,
                 ZIndex = 4,
@@ -2050,13 +1302,13 @@ function VonHub:CreateWindow(Settings)
             new("UICorner", { CornerRadius = UDim.new(0, 4) }, hueSlider)
             new("UIGradient", {
                 Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-                    ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 255, 0)),
-                    ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
-                    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
-                    ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
-                    ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
-                    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0)),
+                    ColorSequenceKeypoint.new(0,   Color3.fromRGB(255,0,0)),
+                    ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255,255,0)),
+                    ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0,255,0)),
+                    ColorSequenceKeypoint.new(0.5,  Color3.fromRGB(0,255,255)),
+                    ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0,0,255)),
+                    ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255,0,255)),
+                    ColorSequenceKeypoint.new(1,   Color3.fromRGB(255,0,0)),
                 }),
                 Rotation = 0,
             }, hueSlider)
@@ -2065,28 +1317,27 @@ function VonHub:CreateWindow(Settings)
                 Size = UDim2.new(0, 10, 0, 10),
                 AnchorPoint = Vector2.new(0.5, 0.5),
                 Position = UDim2.new(h, 0, 0.5, 0),
-                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                BackgroundColor3 = C.White,
                 BorderSizePixel = 0,
                 ZIndex = 6,
             }, hueSlider)
             new("UICorner", { CornerRadius = UDim.new(1, 0) }, hueDot)
-            new("UIStroke", { Color = C.BG_TOP, Thickness = 2 }, hueDot)
+            new("UIStroke", { Color = C.BG, Thickness = 2 }, hueDot)
 
             local hexBox = new("TextBox", {
                 Size = UDim2.new(1, -28, 0, 22),
                 Position = UDim2.new(0, 14, 0, 26),
-                BackgroundColor3 = C.BindBg1,
-                BackgroundTransparency = 0.2,
+                BackgroundColor3 = C.InputBG,
                 BorderSizePixel = 0,
-                Text = string.format("#%02X%02X%02X", color.R * 255, color.G * 255, color.B * 255),
-                TextColor3 = C.RowLabel,
+                Text = string.format("#%02X%02X%02X", color.R*255, color.G*255, color.B*255),
+                TextColor3 = C.Text,
                 TextSize = 11,
                 Font = Enum.Font.GothamMedium,
                 PlaceholderText = "#FFFFFF",
                 ZIndex = 5,
             }, pickerFrame)
             new("UICorner", { CornerRadius = UDim.new(0, 4) }, hexBox)
-            new("UIStroke", { Color = C.BindBorder, Thickness = 1, Transparency = 0.65 }, hexBox)
+            new("UIStroke", { Color = C.StrokeDim, Thickness = 1, Transparency = 0.4 }, hexBox)
             new("UIPadding", { PaddingLeft = UDim.new(0, 6) }, hexBox)
 
             local open = false
@@ -2094,8 +1345,7 @@ function VonHub:CreateWindow(Settings)
 
             local interact = new("TextButton", {
                 Size = UDim2.new(0, 32, 0, 32),
-                Position = UDim2.new(1, -16, 0.5, -16),
-                AnchorPoint = Vector2.new(1, 0),
+                Position = UDim2.new(1, -38, 0.5, -16),
                 BackgroundTransparency = 1,
                 Text = "",
                 ZIndex = 6,
@@ -2104,7 +1354,7 @@ function VonHub:CreateWindow(Settings)
             local function updateColor()
                 local newColor = Color3.fromHSV(h, s, v)
                 preview.BackgroundColor3 = newColor
-                hexBox.Text = string.format("#%02X%02X%02X", newColor.R * 255, newColor.G * 255, newColor.B * 255)
+                hexBox.Text = string.format("#%02X%02X%02X", newColor.R*255, newColor.G*255, newColor.B*255)
                 CPSettings.Color = newColor
                 pcall(CPSettings.Callback, newColor)
             end
@@ -2152,17 +1402,17 @@ function VonHub:CreateWindow(Settings)
                 CPSettings.Color = c
                 h, s, v = c:ToHSV()
                 preview.BackgroundColor3 = c
-                hexBox.Text = string.format("#%02X%02X%02X", c.R * 255, c.G * 255, c.B * 255)
+                hexBox.Text = string.format("#%02X%02X%02X", c.R*255, c.G*255, c.B*255)
             end
 
-            if CPSettings.Flag then VonHub.Flags[CPSettings.Flag] = CPSettings end
+            if CPSettings.Flag then IceHub.Flags[CPSettings.Flag] = CPSettings end
             return CPSettings
         end
 
         return Tab
-    end
+    end -- CreateTab
 
-    -- ── Window API methods ───────────────────────
+    -- ── Destroy ───────────────────────────────────
     function Window:Destroy()
         ScreenGui:Destroy()
     end
@@ -2176,43 +1426,36 @@ function VonHub:CreateWindow(Settings)
         return not hidden
     end
 
-    -- Initial render of mini panel
-    task.defer(function()
-        renderMini()
-    end)
-
     -- ── Key System ───────────────────────────────
     if Settings.KeySystem and Settings.KeySettings then
         local KS = Settings.KeySettings
-        local validKeys = type(KS.Key) == "string" and { KS.Key } or KS.Key or {}
+        local validKeys = type(KS.Key) == "string" and {KS.Key} or KS.Key or {}
         local keyGui = new("ScreenGui", {
-            Name = "VonHubKey",
+            Name = "IceHubKey",
             ResetOnSpawn = false,
             ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
             DisplayOrder = 150,
         })
-        local kParent
-        if gethui then kParent = gethui()
-        elseif not RunService:IsStudio() then kParent = CoreGui
-        else kParent = Players.LocalPlayer:WaitForChild("PlayerGui") end
-        keyGui.Parent = kParent
+        if gethui then keyGui.Parent = gethui()
+        elseif not RunService:IsStudio() then keyGui.Parent = CoreGui
+        else keyGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
 
         local keyFrame = new("Frame", {
             Size = UDim2.new(0, 420, 0, 160),
             Position = UDim2.new(0.5, -210, 0.5, -80),
-            BackgroundColor3 = C.BG_MID,
+            BackgroundColor3 = C.BG2,
             BorderSizePixel = 0,
             ZIndex = 10,
         }, keyGui)
         new("UICorner", { CornerRadius = UDim.new(0, 10) }, keyFrame)
-        new("UIStroke", { Color = C.WindowBorder, Thickness = 1, Transparency = 0.6 }, keyFrame)
+        new("UIStroke", { Color = C.Stroke, Thickness = 1, Transparency = 0.4 }, keyFrame)
 
         new("TextLabel", {
             Size = UDim2.new(1, -28, 0, 30),
             Position = UDim2.new(0, 14, 0, 12),
             BackgroundTransparency = 1,
             Text = KS.Title or "Key System",
-            TextColor3 = C.TitleText,
+            TextColor3 = C.Text,
             TextSize = 15,
             Font = Enum.Font.GothamBold,
             TextXAlignment = Enum.TextXAlignment.Left,
@@ -2224,7 +1467,7 @@ function VonHub:CreateWindow(Settings)
             Position = UDim2.new(0, 14, 0, 44),
             BackgroundTransparency = 1,
             Text = KS.Note or "Enter your key below",
-            TextColor3 = C.NavText,
+            TextColor3 = C.TextDim,
             TextSize = 12,
             Font = Enum.Font.Gotham,
             TextXAlignment = Enum.TextXAlignment.Left,
@@ -2234,27 +1477,26 @@ function VonHub:CreateWindow(Settings)
         local keyBox = new("TextBox", {
             Size = UDim2.new(1, -28, 0, 32),
             Position = UDim2.new(0, 14, 0, 70),
-            BackgroundColor3 = C.BindBg1,
-            BackgroundTransparency = 0.2,
+            BackgroundColor3 = C.InputBG,
             BorderSizePixel = 0,
             PlaceholderText = "Enter key...",
-            PlaceholderColor3 = C.BindText,
-            TextColor3 = C.RowLabel,
+            PlaceholderColor3 = C.TextMuted,
+            TextColor3 = C.Text,
             TextSize = 13,
             Font = Enum.Font.Gotham,
             ClearTextOnFocus = false,
             ZIndex = 11,
         }, keyFrame)
         new("UICorner", { CornerRadius = UDim.new(0, 6) }, keyBox)
-        new("UIStroke", { Color = C.BindBorder, Thickness = 1, Transparency = 0.65 }, keyBox)
+        new("UIStroke", { Color = C.StrokeDim, Thickness = 1, Transparency = 0.3 }, keyBox)
 
         local submitBtn = new("TextButton", {
             Size = UDim2.new(1, -28, 0, 30),
             Position = UDim2.new(0, 14, 0, 112),
-            BackgroundColor3 = C.SepGlow1,
+            BackgroundColor3 = C.Accent,
             BorderSizePixel = 0,
             Text = "Submit",
-            TextColor3 = Color3.fromRGB(255, 255, 255),
+            TextColor3 = C.White,
             TextSize = 13,
             Font = Enum.Font.GothamBold,
             ZIndex = 11,
@@ -2262,8 +1504,9 @@ function VonHub:CreateWindow(Settings)
         new("UICorner", { CornerRadius = UDim.new(0, 6) }, submitBtn)
 
         local passed = false
-        if isfile and isfile("VonHub/keys/" .. (KS.FileName or "key") .. ".txt") then
-            local savedKey = readfile("VonHub/keys/" .. (KS.FileName or "key") .. ".txt")
+        -- Check saved key
+        if isfile and isfile("IceHub/keys/" .. (KS.FileName or "key") .. ".txt") then
+            local savedKey = readfile("IceHub/keys/" .. (KS.FileName or "key") .. ".txt")
             for _, k in ipairs(validKeys) do
                 if savedKey == k then passed = true break end
             end
@@ -2279,15 +1522,15 @@ function VonHub:CreateWindow(Settings)
                 end
                 if found then
                     if KS.SaveKey and writefile then
-                        if not isfolder("VonHub/keys") then makefolder("VonHub/keys") end
-                        writefile("VonHub/keys/" .. (KS.FileName or "key") .. ".txt", entered)
+                        if not isfolder("IceHub/keys") then makefolder("IceHub/keys") end
+                        writefile("IceHub/keys/" .. (KS.FileName or "key") .. ".txt", entered)
                     end
                     keyGui:Destroy()
                     MainFrame.Visible = true
                 else
                     tween(keyFrame, 0.1, { BackgroundColor3 = Color3.fromRGB(80, 20, 20) })
                     task.wait(0.3)
-                    tween(keyFrame, 0.3, { BackgroundColor3 = C.BG_MID })
+                    tween(keyFrame, 0.3, { BackgroundColor3 = C.BG2 })
                 end
             end)
         else
@@ -2301,38 +1544,28 @@ function VonHub:CreateWindow(Settings)
     tween(MainFrame, 0.5, { BackgroundTransparency = 0, Size = UDim2.new(0, 620, 0, 400) })
 
     return Window
-end
+end -- CreateWindow
 
 -- ──────────────────────────────────────────────────
 -- Load Configuration
 -- ──────────────────────────────────────────────────
-function VonHub:LoadConfiguration()
-    if not isfile or not readfile then return end
+function IceHub:LoadConfiguration()
+    -- Loads saved flags from disk if available
     local loaded = false
+    if not (isfile and readfile) then return end
     for flag, elem in pairs(self.Flags) do
-        -- Try to find config file (check common paths)
-        local paths = {
-            "VonHub/config.json",
-            "VonHub_Demo/demo_config.json",
-        }
-        for _, path in ipairs(paths) do
-            if isfile(path) then
-                local ok, data = pcall(function() return HttpService:JSONDecode(readfile(path)) end)
-                if ok and data and data[flag] ~= nil then
-                    pcall(elem.Set, elem, data[flag])
-                    loaded = true
-                    break
-                end
+        local path = (elem.configFolder or "IceHub") .. "/" .. (elem.configFile or "config") .. ".json"
+        if isfile(path) then
+            local ok, data = pcall(function() return HttpService:JSONDecode(readfile(path)) end)
+            if ok and data and data[flag] ~= nil then
+                pcall(elem.Set, elem, data[flag])
+                loaded = true
             end
         end
     end
     if loaded then
-        self:Notify({
-            Title = "Von Hub",
-            Content = "Configuration loaded from previous session.",
-            Duration = 3,
-        })
+        self:Notify({ Title = "Ice Hub", Content = "Configuration loaded from previous session.", Duration = 3 })
     end
 end
 
-return VonHub
+return IceHub
