@@ -16,8 +16,14 @@ IceHub.Flags = {}
 -- ──────────────────────────────────────────────────
 -- Services
 -- ──────────────────────────────────────────────────
-local function getService(n) local s = game:GetService(n) return if cloneref then cloneref(s) else s end end
-local TweenService    = getService("TweenService")
+local function getService(n)
+    local s = game:GetService(n)
+    if cloneref then
+        return cloneref(s)
+    else
+        return s
+    end
+endlocal TweenService    = getService("TweenService")
 local UserInputService = getService("UserInputService")
 local RunService      = getService("RunService")
 local Players         = getService("Players")
