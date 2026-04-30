@@ -23,7 +23,8 @@ local function getService(n)
     else
         return s
     end
-endlocal TweenService    = getService("TweenService")
+end
+local TweenService    = getService("TweenService")
 local UserInputService = getService("UserInputService")
 local RunService      = getService("RunService")
 local Players         = getService("Players")
