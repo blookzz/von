@@ -691,7 +691,6 @@ function IceHub:CreateWindow(Settings)
             TextColor3 = T.MiniTitle,
             TextSize = 10,
             Font = Enum.Font.GothamBold,
-            LetterSpacing = 4,
             TextXAlignment = Enum.TextXAlignment.Left,
             ZIndex = 4,
         }, miniTitleBar)
