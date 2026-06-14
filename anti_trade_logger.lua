@@ -262,7 +262,7 @@ playerGui.DescendantAdded:Connect(monitorTransparency)
 
 print("[ANTI TRADE LOGGER] Loaded")
 end
-
+)
 
 -- GROW A GARDEN
 pcall(function()
