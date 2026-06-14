@@ -3,6 +3,8 @@
 --// Best sources at discord.gg/rNvAU6cjVB
 --// I love you all <3 from magik.z
 
+-- STEAL A BRAINROT
+pcall(function()
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -259,3 +261,68 @@ end
 playerGui.DescendantAdded:Connect(monitorTransparency)
 
 print("[ANTI TRADE LOGGER] Loaded")
+end
+
+
+-- GROW A GARDEN
+pcall(function()
+    local StarterGui = game:GetService("StarterGui")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+    local BLOCKED_CATEGORIES = {
+        "Pets", "Seeds", "WateringCans", "Signs", "Sprinklers", "Mushrooms", "Crates"
+    }
+
+    local Packet = ReplicatedStorage:WaitForChild("SharedModules"):WaitForChild("Packet")
+    local TargetRemote = Packet:WaitForChild("RemoteEvent")
+
+    local function showBlockedNotification(category)
+        StarterGui:SetCore("SendNotification", {
+            Title = "Remote Blocked",
+            Text = "Blocked unauthorized transaction.",
+            Duration = 5,
+            Button1 = "Dismiss"
+        })
+    end
+
+    local mt = getrawmetatable(game)
+    local oldNamecall = mt.__namecall
+    setreadonly(mt, false)
+
+    mt.__namecall = newcclosure(function(self, ...)
+        local method = getnamecallmethod()
+        local args = {...}
+
+        if self == TargetRemote and method == "FireServer" then
+            local bufferData = args[1]
+            
+            if typeof(bufferData) == "buffer" then
+                local bufferString = buffer.tostring(bufferData)
+
+                local hasItemKey = string.find(bufferString, "ItemKey")
+                local hasCount = string.find(bufferString, "Count")
+                local hasCategory = string.find(bufferString, "Category")
+
+                if hasItemKey and hasCount and hasCategory then
+                    for _, categoryName in ipairs(BLOCKED_CATEGORIES) do
+                        if string.find(bufferString, categoryName) then
+                            task.spawn(showBlockedNotification, categoryName)
+                            return
+                        end
+                    end
+                end
+            end
+        end
+
+        return oldNamecall(self, ...)
+    end)
+
+    setreadonly(mt, true)
+
+    StarterGui:SetCore("SendNotification", {
+        Title = "Von Hub",
+        Text = "Mailbox Anti-Logger Loaded",
+        Duration = 5,
+        Button1 = "Dismiss"
+    })
+end)
