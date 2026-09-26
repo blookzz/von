@@ -104,8 +104,9 @@ the lowest-numbered update here.
   U62 15 Aug 2026 - Rebirth 19, more RNG Machine brainrots, La Fuse Machine
   U63 22 Aug 2026 - Bee Base, Bee Flying Gear
   U64 29 Aug 2026 - Bee Admin Machine, new brainrots
-  U65 5 Sep 2026 - CURRENT UPDATE. Money Money Puggy Ritual, 1 OF 1 Banner base
-  U66 12 Sep 2026 - not released yet, this is the NEXT update.
+  U65 5 Sep 2026 - Money Money Puggy Ritual, 1 OF 1 Banner base
+  U67 12 Sep 2026 - Craft Machine is back!
+  U68 26 Sep 2026 - Steal an egg LTM is released. (SAE)
   The official release date for Steal a Brainrot was May 16, 2025.
 
-UPDATE SCHEDULE (oldest -> newest): Update-08/22/2026, Update-08/29/2026, Update-09/05/2026, Update-09/12/2026
+CURRENT DATE: SEPTEMBER 26 2026
