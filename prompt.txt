@@ -107,6 +107,7 @@ the lowest-numbered update here.
   U65 5 Sep 2026 - Money Money Puggy Ritual, 1 OF 1 Banner base
   U67 12 Sep 2026 - Craft Machine is back!
   U68 26 Sep 2026 - Steal an egg LTM is released. (SAE)
+  U69 29 Sep 2026 - Added Celestial mutation.
   The official release date for Steal a Brainrot was May 16, 2025.
 
-CURRENT DATE: SEPTEMBER 26 2026
+CURRENT DATE: SEPTEMBER 29 2026
