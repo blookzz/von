@@ -108,7 +108,15 @@ the lowest-numbered update here.
   U67 12 Sep 2026 - Craft Machine is back!
   U68 26 Sep 2026 - Steal an egg LTM is released. (SAE)
   U69 29 Sep 2026 - Added Celestial mutation.
-  U70 3, Sep 2026	- Haunted Fuse + New Eclipse Mutation + Eclipse base skin
+  U70 3, Sep 2026	- Haunted Fuse + New Eclipse Mutation + Eclipse base skin + Phoenix brainrot
   The official release date for Steal a Brainrot was May 16, 2025.
 
 CURRENT DATE: OCTOBER 3 2026
+
+PHOENIX: NEW BEST 'SECRET' RARITY. NOT OG. INFO:
+DisplayName = "Phoenix",
+    Rarity = "Secret",
+    Price = 425000000000,
+    Generation = 425000000,
+    ObtainedFrom = {
+    Source = "Haunted Fuse",
