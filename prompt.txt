@@ -108,6 +108,7 @@ the lowest-numbered update here.
   U67 12 Sep 2026 - Craft Machine is back!
   U68 26 Sep 2026 - Steal an egg LTM is released. (SAE)
   U69 29 Sep 2026 - Added Celestial mutation.
+  U70 3, Sep 2026	- Haunted Fuse + New Eclipse Mutation + Eclipse base skin
   The official release date for Steal a Brainrot was May 16, 2025.
 
-CURRENT DATE: SEPTEMBER 29 2026
+CURRENT DATE: OCTOBER 3 2026
