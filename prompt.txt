@@ -111,7 +111,7 @@ the lowest-numbered update here.
   U70 3, Sep 2026	- Haunted Fuse + New Eclipse Mutation + Eclipse base skin + Phoenix brainrot
   The official release date for Steal a Brainrot was May 16, 2025.
 
-CURRENT DATE: OCTOBER 3 2026
+CURRENT DATE: OCTOBER 6 2026. IF A DATE IS MENTIONED, DONT DO 0# FOR THE SPECIFIC DAY. IT SHOULD BE ONE DIGIT #.
 
 PHOENIX: NEW BEST 'SECRET' RARITY. NOT OG. INFO:
 DisplayName = "Phoenix",
