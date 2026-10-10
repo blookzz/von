@@ -112,7 +112,7 @@ the lowest-numbered update here.
   U71 10, Oct 2026 - New skeleton brainrots + Skeleton base
   The official release date for Steal a Brainrot was May 16, 2025.
 
-CURRENT DATE: OCTOBER 10 2026. IF A DATE IS MENTIONED, DONT DO 0# FOR THE SPECIFIC DAY. IT SHOULD BE ONE DIGIT #.
+CURRENT DATE: OCTOBER 10 2026. IF A DATE IS MENTIONED BETWEEN 1-9, DONT DO 0# FOR THE SPECIFIC DAY. IT SHOULD BE ONE DIGIT #.
 
 UPDATE OVERVIEW
 New Skeleton base
