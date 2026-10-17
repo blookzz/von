@@ -143,4 +143,3 @@ NEW BRAINROTS OCTOBER 17 UPDATE OVERVIEW:
         IsEnabled = function()
             return updates.Methods.IsEnabled("Update-10/17/2026")
         end
-Skull lucky block is the new lucky block. brainrots:
