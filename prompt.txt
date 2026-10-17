@@ -110,115 +110,37 @@ the lowest-numbered update here.
   U69 29 Sep 2026 - Added Celestial mutation.
   U70 3, Sep 2026	- Haunted Fuse + New Eclipse Mutation + Eclipse base skin + Phoenix brainrot
   U71 10, Oct 2026 - New skeleton brainrots + Skeleton base
+  U72 17, Oct 2026 - New Skeleton Event
   The official release date for Steal a Brainrot was May 16, 2025.
 
-CURRENT DATE: OCTOBER 10 2026. IF A DATE IS MENTIONED BETWEEN 1-9, DONT DO 0# FOR THE SPECIFIC DAY. IT SHOULD BE ONE DIGIT #.
+CURRENT DATE: OCTOBER 17 2026. IF A DATE IS MENTIONED BETWEEN 1-9, DONT DO 0# FOR THE SPECIFIC DAY. IT SHOULD BE ONE DIGIT #.
 
-NEW BRAINROTS OCTOBER 10 UPDATE OVERVIEW. 
+NEW BRAINROTS OCTOBER 17 UPDATE OVERVIEW:
+    ["Skelly and Coffy"] = {
+        DisplayName = "Skelly and Coffy",
+        Rarity = "Secret",
+        Price = 100000000000,
+        Generation = 155000000,
+        ObtainedFrom = { Source = "Skeleton Event", Obtainable = true },
+        IsEnabled = function()
+            return updates.Methods.IsEnabled("Update-10/17/2026")
+        end
+    ["Chicken Zombie"] = {
+        DisplayName = "Chicken Zombie",
+        Rarity = "Secret",
+        Price = 1000000000,
+        Generation = 5500000,
+        ObtainedFrom = { Source = "Skeleton Event", Obtainable = true },
+        IsEnabled = function()
+            return updates.Methods.IsEnabled("Update-10/17/2026")
+        end
+    ["Co Co Co Sahur"] = {
+        DisplayName = "Co Co Co Sahur",
+        Rarity = "Secret",
+        Price = 525000000,
+        Generation = 1750000,
+        ObtainedFrom = { Source = "Skeleton Event", Obtainable = true },
+        IsEnabled = function()
+            return updates.Methods.IsEnabled("Update-10/17/2026")
+        end
 Skull lucky block is the new lucky block. brainrots:
-    ["Tic Tic Rick"] = {
-        DisplayName = "Tic Tic Rick",
-        Rarity = "Brainrot God",
-        Price = 65000000,
-        Generation = 295000,
-        IsEnabled = function()
-            return false
-        end
-    },
-    ["Candi Corni"] = {
-        DisplayName = "Candi Corni",
-        Rarity = "Brainrot God",
-        Price = 77500000,
-        Generation = 321000,
-        ObtainedFrom = { Source = "Skull Lucky Block", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/10/2026")
-        end
-    },
-    ["Grim Cheese"] = {
-        DisplayName = "Grim Cheese",
-        Rarity = "Secret",
-        Price = 510000000,
-        Generation = 1600000,
-        ObtainedFrom = { Source = "Skull Lucky Block", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/10/2026")
-        end
-    },
-    ["Zombie Bowl"] = {
-        DisplayName = "Zombie Bowl",
-        Rarity = "Secret",
-        Price = 875000000,
-        Generation = 4500000,
-        ObtainedFrom = { Source = "Skull Lucky Block", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/10/2026")
-        end
-    },
-    ["Bananito Skelito"] = {
-        DisplayName = "Bananito Skelito",
-        Rarity = "Secret",
-        Price = 1400000000,
-        Generation = 8500000,
-        ObtainedFrom = { Source = "Skull Lucky Block", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/10/2026")
-        end
-    },
-    ["Bat-in-the-Box"] = {
-        DisplayName = "Bat-in-the-Box",
-        Rarity = "Secret",
-        Price = 2750000000,
-        Generation = 22500000,
-        ObtainedFrom = { Source = "Skull Lucky Block", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/10/2026")
-        end
-    },
-    ["Boo Boo Rocket"] = {
-        DisplayName = "Boo Boo Rocket",
-        Rarity = "Secret",
-        Price = 6000000000,
-        Generation = 37500000,
-        ObtainedFrom = { Source = "Skull Lucky Block", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/10/2026")
-        end
-    },
-    ["Slushki Huski"] = {
-        DisplayName = "Slushki Huski",
-        Rarity = "Secret",
-        Price = 23500000000,
-        Generation = 77500000,
-        IsEnabled = function()
-            return false
-        end
-    },
-    ["Flying Dutchman"] = {
-        DisplayName = "Flying Dutchman",
-        Rarity = "Secret",
-        Price = 32500000000,
-        Generation = 92500000,
-        ObtainedFrom = { Source = "Skull Lucky Block", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/10/2026")
-        end
-    },
-    ["Cobra Gelato"] = {
-        DisplayName = "Cobra Gelato",
-        Rarity = "Secret",
-        Price = 140000000000,
-        Generation = 172500000,
-        IsEnabled = function()
-            return false
-        end
-    },
-    ["Dragon Skeletonini"] = {
-        DisplayName = "Dragon Skeletonini",
-        Rarity = "Secret",
-        Price = 325000000000,
-        Generation = 325000000,
-        ObtainedFrom = { Source = "Skull Lucky Block", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/10/2026")
-        end
