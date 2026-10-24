@@ -113,33 +113,4 @@ the lowest-numbered update here.
   U72 17, Oct 2026 - New Skeleton Event
   The official release date for Steal a Brainrot was May 16, 2025.
 
-CURRENT DATE: OCTOBER 20 2026. IF A DATE IS MENTIONED BETWEEN 1-9, DONT DO 0# FOR THE SPECIFIC DAY. IT SHOULD BE ONE DIGIT #.
-
-NEW BRAINROTS OCTOBER 17 UPDATE OVERVIEW:
-    ["Skelly and Coffy"] = {
-        DisplayName = "Skelly and Coffy",
-        Rarity = "Secret",
-        Price = 100000000000,
-        Generation = 155000000,
-        ObtainedFrom = { Source = "Skeleton Event", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/17/2026")
-        end
-    ["Chicken Zombie"] = {
-        DisplayName = "Chicken Zombie",
-        Rarity = "Secret",
-        Price = 1000000000,
-        Generation = 5500000,
-        ObtainedFrom = { Source = "Skeleton Event", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/17/2026")
-        end
-    ["Co Co Co Sahur"] = {
-        DisplayName = "Co Co Co Sahur",
-        Rarity = "Secret",
-        Price = 525000000,
-        Generation = 1750000,
-        ObtainedFrom = { Source = "Skeleton Event", Obtainable = true },
-        IsEnabled = function()
-            return updates.Methods.IsEnabled("Update-10/17/2026")
-        end
+CURRENT DATE: OCTOBER 24 2026. IF A DATE IS MENTIONED BETWEEN 1-9, DONT DO 0# FOR THE SPECIFIC DAY. IT SHOULD BE ONE DIGIT #.
