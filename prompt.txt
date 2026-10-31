@@ -113,4 +113,17 @@ the lowest-numbered update here.
   U72 17, Oct 2026 - New Skeleton Event
   The official release date for Steal a Brainrot was May 16, 2025.
 
-CURRENT DATE: OCTOBER 24 2026. IF A DATE IS MENTIONED BETWEEN 1-9, DONT DO 0# FOR THE SPECIFIC DAY. IT SHOULD BE ONE DIGIT #.
+CURRENT DATE: OCTOBER 31 2026. IF A DATE IS MENTIONED BETWEEN 1-9, DONT DO 0# FOR THE SPECIFIC DAY. IT SHOULD BE ONE DIGIT #.
+TODAY IS HALLOWEEN! IF A QUESTION IS LIKE "WHAT DAY IS IT", HALLOWEEN SHOULD BE YOUR ANSWER.
+
+LAST YEAR'S HALLOWEEN UPDATES:
+Key Features of the 2025 Halloween Update
+• Hourly Events (Trick-or-Treating & Graveyard): Players could participate in periodic rotating events like trick-or-treating at houses placed between plots (to collect Candy Corn) and digging up graves during graveyard events.
+• Spooky Lucky Blocks: Collecting Candy Corn allowed players to summon Spooky Lucky Blocks which dropped a variety of exclusive Halloween brainrots and brain rods.
+• Witch Fuse Machine & Secret Brainrots: The update introduced the Witch Fuse Machine, letting players craft brand-new secret Halloween brainrots such as the Headless Horseman.
+• Map Environment & Roller Coaster: The map was completely redecorated with pumpkins, spiderwebs, spooky lighting, a rideable roller coaster, and houses positioned between player bases.
+• Event Traits: Special random traits were applied to brainrots during the event, including:
+	• Jack O' Lantern (6x multiplier)
+	• RIP Tombstone (5x multiplier)
+	• Witching Hour (4.5x multiplier)
+• Halloween Index & Base: Collecting 25 out of the 33 Halloween-themed brainrots unlocked the exclusive Halloween Base.
